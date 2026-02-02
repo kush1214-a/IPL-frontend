@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import "../styles/StatsDetail.css";
 
 export default function StatsDetail() {
   const { statType } = useParams();

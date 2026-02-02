@@ -6,20 +6,29 @@ import "../styles/TeamDetail.css";
 export default function TeamDetail() {
   const { teamCode } = useParams();
   const [team, setTeam] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    api.get(`/teams/${teamCode}`).then(res => setTeam(res.data));
+    if (!teamCode) return;
+
+    api.get(`/teams/${teamCode}`)
+      .then(res => setTeam(res.data))
+      .catch(() => setError(true));
   }, [teamCode]);
 
+  if (error) return <h2>Invalid team</h2>;
   if (!team) return <h2>Loading...</h2>;
 
   return (
-    <div>
+    <div className="team-detail-page">
       <h1>{team.name}</h1>
-      <h3>Players</h3>
-      {team.players.map(p => (
-        <p key={p.id}>{p.name}</p>
-      ))}
+      <div className="players-grid">
+        {team.players?.map(p => (
+          <div key={p.id} className="player-card">
+            {p.name}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

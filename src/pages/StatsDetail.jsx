@@ -3,65 +3,45 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/StatsDetail.css";
 
-const StatsDetail = () => {
+export default function StatsDetail() {
   const { statType } = useParams();
+  const safeType = statType ?? "";
+
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchStats() {
+    if (!safeType) return;
+
+    (async () => {
       try {
-        const res = await api.get(`/stats/${statType}`);
+        const res = await api.get(`/stats/${safeType}`);
         setStats(res.data || []);
       } catch (err) {
-        console.error("❌ Stats fetch error", err);
+        console.error("Stats fetch error", err);
         setStats([]);
       } finally {
         setLoading(false);
       }
-    }
+    })();
+  }, [safeType]);
 
-    fetchStats();
-  }, [statType]);
-
-  const title = statType.replace(/_/g, " ").toUpperCase();
-
-  if (loading) {
-    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+  if (!safeType || loading) {
+    return <h2>Loading...</h2>;
   }
 
-  if (stats.length === 0) {
-    return <h2 style={{ textAlign: "center" }}>No data available</h2>;
-  }
+  const title = safeType.replace(/_/g, " ").toUpperCase();
 
   return (
     <div className="stats-page">
-      <h1 className="stats-title">{title}</h1>
-
-      <div className="leaderboard">
-        {stats.map((item, index) => {
-          const value =
-            item.runs ??
-            item.highest ??
-            item.average ??
-            item.strike ??
-            item.fours ??
-            item.sixes ??
-            "-";
-
-          return (
-            <div key={item.id} className="leader-row">
-              <div className="rank">{index + 1}</div>
-              <div className="player-name">
-                {item.player?.name || "Unknown Player"}
-              </div>
-              <div className="stat-value">{value}</div>
-            </div>
-          );
-        })}
-      </div>
+      <h1>{title}</h1>
+      {stats.map((item, index) => (
+        <div key={item.id ?? index}>
+          <span>{index + 1}</span>
+          <span>{item.player?.name || "-"}</span>
+          <span>{item.runs ?? "-"}</span>
+        </div>
+      ))}
     </div>
   );
-};
-
-export default StatsDetail;
+}

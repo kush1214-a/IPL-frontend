@@ -7,6 +7,7 @@ import TeamDetail from "./pages/TeamDetail";
 import Players from "./pages/Players";
 import Compare from "./pages/Compare";
 import StatsDetail from "./pages/StatsDetail";
+import Charts from "./pages/Charts";
 
 const App = () => {
   return (
@@ -29,6 +30,8 @@ const App = () => {
 
         {/* COMPARE */}
         <Route path="/compare" element={<Compare />} />
+
+        <Route path="/charts" element={<Charts />} />
 
         {/* FALLBACK */}
         <Route

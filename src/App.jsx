@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Players from "./pages/Players";
 import Teams from "./pages/Teams";
-import Team from "./pages/Team";
+import Team from "./pages/TeamDetail";
 import StatsDetail from "./pages/StatsDetail";
 
 export default function App() {

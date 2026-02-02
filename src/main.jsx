@@ -1,14 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Players from "./pages/Players";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 
-function App() {
-  return (
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/players" element={<Players />} />
-      </Routes>
+      <App />
     </BrowserRouter>
-  );
-}
-
-export default App;
+  </React.StrictMode>
+);

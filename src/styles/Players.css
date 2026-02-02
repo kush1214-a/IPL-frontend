@@ -1,0 +1,88 @@
+.players-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: radial-gradient(circle, #061a44, #020b25);
+  color: white;
+}
+
+/* LIST */
+.players-list {
+  max-width: 420px;
+  margin: auto;
+}
+
+.player-row {
+  background: #0b1437;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.player-row:hover {
+  background: #13206b;
+}
+
+.player-row h4 {
+  margin: 0;
+}
+
+.player-row span {
+  font-size: 13px;
+  color: #f5c518;
+}
+
+/* PAGINATION */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* DETAIL PANEL */
+.player-detail {
+  position: fixed;
+  right: 30px;
+  top: 120px;
+  width: 300px;
+  background: #0b1437;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+.player-detail .close {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.player-detail .team {
+  color: #f5c518;
+  margin-bottom: 10px;
+}
+
+.socials a {
+  margin-right: 12px;
+  color: #4ea1ff;
+  text-decoration: none;
+}

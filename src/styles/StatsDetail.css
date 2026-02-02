@@ -1,0 +1,72 @@
+.stats-page {
+  min-height: calc(100vh - 64px);
+  padding: 50px 80px;
+  background: linear-gradient(180deg, #020b25, #000814);
+  color: white;
+}
+
+.stats-title {
+  text-align: center;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+.leaderboard {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.leader-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  align-items: center;
+  padding: 18px 24px;
+  margin-bottom: 14px;
+  background: linear-gradient(180deg, #0d2a7a, #06153a);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+
+.leader-row:hover {
+  transform: translateY(-4px);
+  background: linear-gradient(180deg, #133a9c, #0a1f55);
+}
+
+.rank {
+  font-size: 36px;
+  font-weight: 900;
+  color: #ffffff33;
+}
+
+.player-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffb703;
+  text-align: right;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .stats-page {
+    padding: 30px 20px;
+  }
+
+  .leader-row {
+    grid-template-columns: 50px 1fr 80px;
+  }
+
+  .rank {
+    font-size: 26px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+}

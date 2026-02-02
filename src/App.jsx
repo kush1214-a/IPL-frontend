@@ -6,8 +6,9 @@ import Teams from "./pages/Teams";
 import TeamDetail from "./pages/TeamDetail";
 import Compare from "./pages/Compare";
 import Charts from "./pages/Charts";
-import StatsPage from "./pages/StatsPage";
+import StatsPage from "./pages/StatsDetail";
 import Navbar from "./components/Navbar";
+import StatsDetail from "./pages/StatsDetail";
 
 export default function App() {
   return (
@@ -22,7 +23,7 @@ export default function App() {
         <Route path="/teams" element={<Teams />} />
         <Route path="/teams/:short" element={<TeamDetail />} />
 
-        <Route path="/stats/:type" element={<StatsPage />} />
+        <Route path="/stats/:type" element={<StatsDetail/>} />
 
         <Route path="/charts" element={<Charts />} />
 

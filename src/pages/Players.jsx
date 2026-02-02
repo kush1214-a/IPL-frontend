@@ -3,7 +3,7 @@ import api from "../services/api";
 import "../styles/Players.css";
 
 export default function Players() {
-  const [players, setPlayers] = useState([]);   // ALWAYS array
+  const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -15,9 +15,7 @@ export default function Players() {
   async function fetchPlayers() {
     try {
       const res = await api.get(`/players?page=${page}&limit=${limit}`);
-
-      // ✅ backend array return karta hai
-      setPlayers(Array.isArray(res.data) ? res.data : []);
+      setPlayers(res.data.players || []);
     } catch (err) {
       console.error("❌ Players fetch error:", err);
       setPlayers([]);
@@ -27,7 +25,6 @@ export default function Players() {
   return (
     <div className="players-page">
 
-      {/* ===== LIST ===== */}
       <div className="players-list">
         {players.length === 0 && <p className="empty">No players found</p>}
 
@@ -43,12 +40,8 @@ export default function Players() {
         ))}
       </div>
 
-      {/* ===== PAGINATION ===== */}
       <div className="pagination">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-        >
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
           ◀ Prev
         </button>
 
@@ -62,7 +55,6 @@ export default function Players() {
         </button>
       </div>
 
-      {/* ===== DETAIL PANEL ===== */}
       {selected && (
         <div className="player-detail">
           <button className="close" onClick={() => setSelected(null)}>✕</button>
@@ -75,21 +67,8 @@ export default function Players() {
             <p><b>Batting:</b> {selected.batting || "—"}</p>
             <p><b>Bowling:</b> {selected.bowling || "—"}</p>
           </div>
-
-          <div className="socials">
-            {selected.twitter && (
-              <a href={selected.twitter} target="_blank">Twitter</a>
-            )}
-            {selected.instagram && (
-              <a href={selected.instagram} target="_blank">Instagram</a>
-            )}
-            {selected.facebook && (
-              <a href={selected.facebook} target="_blank">Facebook</a>
-            )}
-          </div>
         </div>
       )}
-
     </div>
   );
 }

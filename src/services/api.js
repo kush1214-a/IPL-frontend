@@ -1,7 +1,10 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+const API = axios.create({
+  baseURL: import.meta.env.VITE_API_URL
 });
 
-export default api;
+export const getPlayers = async (page = 1) => {
+  const res = await API.get(`/players?page=${page}`);
+  return res.data; // 👈 poora object
+};

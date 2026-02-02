@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import "../styles/Teams.css";
+import "../styles/Teams.css
 
 export default function Team() {
   const { short } = useParams();     // URL param

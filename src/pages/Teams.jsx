@@ -1,42 +1,55 @@
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import "../styles/Teams.css";
+import "../styles/Team.css";
 
-export default function Teams() {
-  const [teams, setTeams] = useState([]);
-  const navigate = useNavigate();
+export default function Team() {
+  const { short } = useParams();     // URL param
+  const [team, setTeam] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // 🛡️ ABSOLUTE GUARD
+  if (!short) {
+    return <h2 style={{ textAlign: "center" }}>Invalid team</h2>;
+  }
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get("/teams");
-        setTeams(res.data || []);
-      } catch (err) {
-        console.error("Teams fetch error", err);
-        setTeams([]);
-      }
-    })();
-  }, []);
+    fetchTeam();
+    // eslint-disable-next-line
+  }, [short]);
+
+  async function fetchTeam() {
+    try {
+      setLoading(true);
+      const res = await api.get(`/teams/${short}`);
+      setTeam(res.data);
+    } catch (err) {
+      console.error("❌ Team fetch error", err);
+      setError("Team not found");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+  }
+
+  if (error) {
+    return <h2 style={{ textAlign: "center" }}>{error}</h2>;
+  }
 
   return (
-    <div className="teams-page">
-      <h1>IPL Teams</h1>
-      <div className="teams-grid">
-        {teams.map((team) => (
-          <div
-            key={team.id}
-            className="team-card"
-            onClick={() => {
-              if (!team.short) return; // FIX: safe route
-              navigate(`/teams/${team.short}`);
-            }}
-          >
-            <h3>{team.name}</h3>
-            <p>{team.short}</p>
-          </div>
+    <div className="team-page">
+      <h1>{team.name}</h1>
+      <h3>Players</h3>
+
+      <ul className="player-list">
+        {team.players?.map((p) => (
+          <li key={p.id}>{p.name}</li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

@@ -202,3 +202,25 @@
     bottom: 20px;
   }
 }
+
+.role {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.role-batter {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.role-bowler {
+  background: #7c2d12;
+  color: #fff;
+}
+
+.role-all-rounder {
+  background: #166534;
+  color: #fff;
+}

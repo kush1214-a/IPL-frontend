@@ -6,49 +6,25 @@ export default function Players() {
   const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  /* 🔥 PAGINATION STATE */
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  /* ================= FETCH PLAYERS ================= */
   useEffect(() => {
     api
-      .get(`/players?page=${page}`)
+      .get("/players")
       .then((res) => {
-        setPlayers(res.data.data || []);
-        setTotalPages(res.data.totalPages || 1);
+        // backend response: { data, page, totalPages }
+        setPlayers(res.data?.data || []);
       })
-      .catch((err) => {
-        console.error("Players fetch error:", err);
-      });
-  }, [page]);
+      .catch((err) => console.error("Players fetch error", err));
+  }, []);
 
-  /* ================= ROLE FALLBACK ================= */
-  const getRole = (player) => {
-    if (player.role) return player.role;
-    if (player.batting && player.bowling) return "ALL-ROUNDER";
-    if (player.batting) return "BATTER";
-    if (player.bowling) return "BOWLER";
-    return "PLAYER";
-  };
+  const getBatting = (stats) =>
+    stats.find((s) => s.statType.startsWith("batting"));
 
-  /* ================= STAT PICKERS ================= */
-  const getBatting = (stats = []) =>
-    stats.find((s) => s.statType?.startsWith("batting"));
-
-  const getBowling = (stats = []) =>
-    stats.find((s) => s.statType?.startsWith("bowling"));
-
-  /* ================= VISIBILITY RULES ================= */
-  const showBatting = (role) =>
-    ["BATTER", "ALL-ROUNDER", "WICKET-KEEPER"].includes(role);
-
-  const showBowling = (role) =>
-    ["ALL-ROUNDER", "BOWLER"].includes(role);
+  const getBowling = (stats) =>
+    stats.find((s) => s.statType.startsWith("bowling"));
 
   return (
     <div className="players-page">
-      {/* ================= PLAYER LIST ================= */}
+      {/* LEFT LIST */}
       <div className="players-list">
         {players.map((p) => (
           <div
@@ -57,90 +33,73 @@ export default function Players() {
             onClick={() => setSelected(p)}
           >
             <h4>{p.name}</h4>
-            <span>{p.team?.name}</span>
+            <span>
+              {p.team?.name} •{" "}
+              <strong className={`role role-${p.role?.toLowerCase()}`}>
+                {p.role}
+              </strong>
+            </span>
           </div>
         ))}
-
-        {/* 🔥 PAGINATION CONTROLS */}
-        <div className="pagination">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            ◀ Prev
-          </button>
-
-          <span>
-            Page {page} / {totalPages}
-          </span>
-
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next ▶
-          </button>
-        </div>
       </div>
 
-      {/* ================= PLAYER MODAL ================= */}
-      {selected && (() => {
-        const role = getRole(selected);
-        const batting = getBatting(selected.stats);
-        const bowling = getBowling(selected.stats);
+      {/* RIGHT POPUP */}
+      {selected && (
+        <>
+          <div className="overlay" onClick={() => setSelected(null)} />
 
-        return (
-          <>
-            <div className="overlay" onClick={() => setSelected(null)} />
+          <div className="player-popup">
+            <button className="close" onClick={() => setSelected(null)}>
+              ×
+            </button>
 
-            <div className="player-popup">
-              <button className="close" onClick={() => setSelected(null)}>
-                ×
-              </button>
+            <h2>{selected.name}</h2>
+            <p className="team">
+              {selected.team?.name} •{" "}
+              <span className={`role role-${selected.role?.toLowerCase()}`}>
+                {selected.role}
+              </span>
+            </p>
 
-              <h2>{selected.name}</h2>
-              <p className="team">
-                {selected.team?.name} • {role}
-              </p>
-
-              {/* ===== BATTTING ===== */}
-              {showBatting(role) && batting && (
+            {/* BATTTING */}
+            {["BATTER", "ALL-ROUNDER"].includes(selected.role) &&
+              getBatting(selected.stats) && (
                 <>
-                  <div className="section-title">Batting</div>
+                  <div className="section-title">BATTING</div>
                   <div className="stats-grid">
-                    <Box label="Matches" value={batting.matches} />
-                    <Box label="Runs" value={batting.runs} />
-                    <Box label="Best" value={batting.highest} />
-                    <Box label="Average" value={batting.average ?? "-"} />
-                    <Box label="Strike Rate" value={batting.strike ?? "-"} />
-                    <Box label="Fours" value={batting.fours} />
-                    <Box label="Sixes" value={batting.sixes} />
+                    <Stat label="Matches" value={getBatting(selected.stats).matches} />
+                    <Stat label="Runs" value={getBatting(selected.stats).runs} />
+                    <Stat label="Best" value={getBatting(selected.stats).highest} />
+                    <Stat label="Average" value={getBatting(selected.stats).average ?? "-"} />
+                    <Stat label="Strike" value={getBatting(selected.stats).strike ?? "-"} />
+                    <Stat label="Fours" value={getBatting(selected.stats).fours} />
+                    <Stat label="Sixes" value={getBatting(selected.stats).sixes} />
                   </div>
                 </>
               )}
 
-              {/* ===== BOWLING ===== */}
-              {showBowling(role) && bowling && (
+            {/* BOWLING */}
+            {["BOWLER", "ALL-ROUNDER"].includes(selected.role) &&
+              getBowling(selected.stats) && (
                 <>
-                  <div className="section-title">Bowling</div>
+                  <div className="section-title">BOWLING</div>
                   <div className="stats-grid">
-                    <Box label="Matches" value={bowling.matches} />
-                    <Box label="Wickets" value={bowling.wickets} />
-                    <Box label="Average" value={bowling.average ?? "-"} />
-                    <Box label="Strike" value={bowling.strike ?? "-"} />
+                    <Stat label="Matches" value={getBowling(selected.stats).matches} />
+                    <Stat label="Wickets" value={getBowling(selected.stats).wickets} />
+                    <Stat label="Average" value={getBowling(selected.stats).average ?? "-"} />
+                    <Stat label="Strike" value={getBowling(selected.stats).strike ?? "-"} />
                   </div>
                 </>
               )}
-            </div>
-          </>
-        );
-      })()}
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
-/* ================= SMALL STAT BOX ================= */
-function Box({ label, value }) {
+/* SMALL STAT BOX */
+function Stat({ label, value }) {
   return (
     <div className="stat-box">
       <span>{label}</span>

@@ -25,7 +25,7 @@ const TEAM_TITLES = {
   KKR: [2012, 2014, 2024],
   RR: [2008],
   SRH: [2016],
-  RCB: [],
+  RCB: [2025],
   DC: [],
   PBKS: [],
   LSG: []

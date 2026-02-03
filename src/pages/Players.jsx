@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./Players.css";
+import "../styles/Players.css";
 
 export default function Players() {
   const [players, setPlayers] = useState([]);

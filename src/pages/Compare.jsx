@@ -4,80 +4,35 @@ import "../styles/Compare.css";
 
 export default function Compare() {
   const [teams, setTeams] = useState([]);
-  const [left, setLeft] = useState(null);
-  const [right, setRight] = useState(null);
-  const [stats, setStats] = useState(null);
+  const [teamA, setTeamA] = useState("");
+  const [teamB, setTeamB] = useState("");
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  /* LOAD TEAMS */
+  // load teams in dropdown
   useEffect(() => {
-    api.get("/teams").then((res) => setTeams(res.data || []));
+    api.get("/teams").then((res) => setTeams(res.data));
   }, []);
 
-  /* COMPARE TEAMS */
+  // compare teams
   useEffect(() => {
-    if (!left || !right) return;
+    if (!teamA || !teamB) return;
 
     setLoading(true);
     api
-      .get(`/compare/teams?teamA=${left.short}&teamB=${right.short}`)
-      .then((res) => setStats(res.data))
-      .catch(() => setStats(null))
+      .get(`/compare?teamA=${teamA}&teamB=${teamB}`)
+      .then((res) => setResult(res.data))
+      .catch(() => setResult(null))
       .finally(() => setLoading(false));
-  }, [left, right]);
+  }, [teamA, teamB]);
 
   return (
     <div className="compare-page">
       <h1 className="compare-title">HEAD TO HEAD</h1>
 
-      {/* TEAM CARDS */}
-      <div className="compare-cards">
-        <TeamCard side="left" team={left} teams={teams} onSelect={setLeft} />
-        <div className="vs">VS</div>
-        <TeamCard side="right" team={right} teams={teams} onSelect={setRight} />
-      </div>
-
-      {/* LOADING */}
-      {loading && <p className="loading">Comparing teams...</p>}
-
-      {/* RESULT */}
-      {stats && (
-        <div className="compare-stats">
-          <div className="stat-row">
-            <span>{stats.teamAWins}</span>
-            <b>Wins</b>
-            <span>{stats.teamBWins}</span>
-          </div>
-
-          <div className="stat-row">
-            <span>{stats.matches}</span>
-            <b>Matches</b>
-            <span>{stats.matches}</span>
-          </div>
-
-          <div className="stat-row">
-            <span>-</span>
-            <b>No Result</b>
-            <span>{stats.noResult}</span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ================= TEAM CARD ================= */
-
-function TeamCard({ team, teams, onSelect }) {
-  return (
-    <div className="team-card">
-      {!team ? (
-        <select
-          className="team-select"
-          onChange={(e) =>
-            onSelect(teams.find((t) => t.short === e.target.value))
-          }
-        >
+      {/* TEAM SELECT */}
+      <div className="compare-select">
+        <select value={teamA} onChange={(e) => setTeamA(e.target.value)}>
           <option value="">+ Add Team</option>
           {teams.map((t) => (
             <option key={t.id} value={t.short}>
@@ -85,11 +40,51 @@ function TeamCard({ team, teams, onSelect }) {
             </option>
           ))}
         </select>
-      ) : (
-        <>
-          <img src={team.logo} alt={team.name} />
-          <h3>{team.name}</h3>
-        </>
+
+        <span className="vs">VS</span>
+
+        <select value={teamB} onChange={(e) => setTeamB(e.target.value)}>
+          <option value="">+ Add Team</option>
+          {teams.map((t) => (
+            <option key={t.id} value={t.short}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* LOADING */}
+      {loading && <p className="loading">Comparing teams...</p>}
+
+      {/* RESULT */}
+      {result && (
+        <div className="compare-result">
+          {result.map((team) => (
+            <div key={team.short} className="compare-card">
+              <h2>{team.name}</h2>
+
+              <div className="compare-stat">
+                <span>Players</span>
+                <b>{team.players}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Matches</span>
+                <b>{team.totalMatches}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Runs</span>
+                <b>{team.totalRuns}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Wickets</span>
+                <b>{team.totalWickets}</b>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

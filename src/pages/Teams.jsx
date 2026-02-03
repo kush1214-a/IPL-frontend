@@ -8,21 +8,40 @@ export default function Teams() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/teams").then(res => setTeams(res.data || []));
+    async function fetchTeams() {
+      try {
+        const res = await api.get("/teams");
+        setTeams(res.data || []);
+      } catch (err) {
+        console.error("❌ Teams fetch error", err);
+        setTeams([]);
+      }
+    }
+
+    fetchTeams();
   }, []);
 
   return (
     <div className="teams-page">
-      {teams.map(team => (
-        <div
-          key={team.id}
-          className="team-card"
-          onClick={() => team.short && navigate(`/teams/${team.short}`)}
-        >
-          <h3>{team.name}</h3>
-          <p>{team.short}</p>
-        </div>
-      ))}
+      <h1 className="teams-title">IPL Teams</h1>
+
+      <div className="teams-grid">
+        {teams.map((team) => (
+          <div
+            key={team.id}
+            className="team-card"
+            onClick={() => navigate(`/teams/${team.short}`)}
+          >
+            <img
+              src={team.logo}
+              alt={team.name}
+              className="team-logo"
+            />
+            <h3>{team.name}</h3>
+            <span className="team-short">{team.short}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

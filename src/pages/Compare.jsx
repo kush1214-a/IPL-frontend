@@ -7,59 +7,55 @@ export default function Compare() {
   const [left, setLeft] = useState(null);
   const [right, setRight] = useState(null);
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  // load teams
   useEffect(() => {
     api.get("/teams").then((res) => setTeams(res.data || []));
   }, []);
 
-  // compare teams (🔥 CORRECT ENDPOINT)
   useEffect(() => {
     if (!left || !right) return;
 
-    setLoading(true);
     api
       .get(`/compare/teams?teamA=${left.short}&teamB=${right.short}`)
       .then((res) => setStats(res.data))
-      .catch(() => setStats(null))
-      .finally(() => setLoading(false));
+      .catch(() => setStats(null));
   }, [left, right]);
 
   return (
     <div className="compare-page">
       <h1 className="compare-title">HEAD TO HEAD</h1>
 
-      {/* TEAM CARDS */}
-      <div className="compare-cards">
-        <TeamCard team={left} teams={teams} onSelect={setLeft} />
-        <div className="vs">VS</div>
-        <TeamCard team={right} teams={teams} onSelect={setRight} />
+      {/* SELECT */}
+      <div className="compare-select">
+        <select onChange={(e) => setLeft(teams.find(t => t.short === e.target.value))}>
+          <option value="">Select Team</option>
+          {teams.map(t => (
+            <option key={t.id} value={t.short}>{t.name}</option>
+          ))}
+        </select>
+
+        <span className="vs">VS</span>
+
+        <select onChange={(e) => setRight(teams.find(t => t.short === e.target.value))}>
+          <option value="">Select Team</option>
+          {teams.map(t => (
+            <option key={t.id} value={t.short}>{t.name}</option>
+          ))}
+        </select>
       </div>
 
-      {/* LOADING */}
-      {loading && <p className="loading">Loading comparison...</p>}
+      {/* TEAM CARDS */}
+      <div className="compare-cards">
+        {left && <TeamCard team={left} />}
+        {right && <TeamCard team={right} />}
+      </div>
 
-      {/* RESULT */}
+      {/* STATS */}
       {stats && (
         <div className="compare-stats">
-          <div className="stat-row">
-            <span>{stats.teamA}</span>
-            <span className="label">Matches</span>
-            <span>{stats.teamB}</span>
-          </div>
-
-          <div className="stat-row">
-            <span>{stats.teamAWins}</span>
-            <span className="label">Wins</span>
-            <span>{stats.teamBWins}</span>
-          </div>
-
-          <div className="stat-row">
-            <span>-</span>
-            <span className="label">No Result</span>
-            <span>{stats.noResult}</span>
-          </div>
+          <div>{stats.teamA} Wins: {stats.teamAWins}</div>
+          <div>{stats.teamB} Wins: {stats.teamBWins}</div>
+          <div>Matches: {stats.matches}</div>
         </div>
       )}
     </div>
@@ -68,28 +64,13 @@ export default function Compare() {
 
 /* ================= TEAM CARD ================= */
 
-function TeamCard({ team, teams, onSelect }) {
+function TeamCard({ team }) {
   return (
     <div className="team-card">
-      {!team ? (
-        <select
-          onChange={(e) =>
-            onSelect(teams.find((t) => t.short === e.target.value))
-          }
-        >
-          <option value="">+ Add Team</option>
-          {teams.map((t) => (
-            <option key={t.id} value={t.short}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <>
-          <img src={team.logo} alt={team.name} />
-          <h3>{team.name}</h3>
-        </>
-      )}
+      <div className="team-logo-box">
+        <img src={team.logo} alt={team.name} />
+      </div>
+      <h3>{team.name}</h3>
     </div>
   );
 }

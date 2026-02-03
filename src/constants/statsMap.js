@@ -24,11 +24,6 @@ const statsMap = [
     key: "bowling_best_economy_rates",
     label: "Best Economy",
   },
-  
-  {
-    key: "bowling_top_wicket_takers",
-    label: "Top Wicket Takers",
-  },
 ];
 
 export default statsMap;

@@ -3,23 +3,6 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/TeamDetail.css";
 
-const TEAM_INFO = {
-  RCB: {
-    captain: "Faf du Plessis",
-    coach: "Andy Flower",
-    owner: "United Spirits",
-    venue: "M. Chinnaswamy Stadium",
-    titles: [2025]
-  },
-  CSK: {
-    captain: "MS Dhoni",
-    coach: "Stephen Fleming",
-    owner: "CSK Cricket Ltd",
-    venue: "M. A. Chidambaram Stadium",
-    titles: [2010, 2011, 2018, 2021, 2023]
-  }
-};
-
 export default function TeamDetail() {
   const { teamCode } = useParams();
   const [team, setTeam] = useState(null);
@@ -28,28 +11,28 @@ export default function TeamDetail() {
     api.get(`/teams/${teamCode}`).then(res => setTeam(res.data));
   }, [teamCode]);
 
-  if (!team) return <h2 className="loading">Loading...</h2>;
-
-  const info = TEAM_INFO[teamCode] || {};
+  if (!team) return <h2>Loading...</h2>;
 
   return (
-    <div className="team-detail-page">
-      {/* HEADER */}
-      <div className="team-header">
-        <img src={team.logo} alt={team.name} className="team-logo" />
-
-        <div className="team-meta">
+    <div
+      className="team-detail-page"
+      style={{ backgroundImage: "url(/bg/ipl.jpg)" }}
+    >
+      {/* BANNER */}
+      <div className="team-banner">
+        <img src={team.logo} alt={team.name} />
+        <div>
           <h1>{team.name}</h1>
-
-          <p className="titles">
-            🏆 {info.titles?.length ? info.titles.join(", ") : "No titles"}
-          </p>
-
-          <p><b>Captain:</b> {info.captain}</p>
-          <p><b>Coach:</b> {info.coach}</p>
-          <p><b>Owner:</b> {info.owner}</p>
-          <p><b>Venue:</b> {info.venue}</p>
+          <p>🏆 {team.titles?.join(", ") || "No Titles"}</p>
         </div>
+      </div>
+
+      {/* META */}
+      <div className="team-meta">
+        <p><b>Captain:</b> {team.captain}</p>
+        <p><b>Coach:</b> {team.coach}</p>
+        <p><b>Owner:</b> {team.owner}</p>
+        <p><b>Venue:</b> {team.venue}</p>
       </div>
 
       {/* SQUAD */}
@@ -57,9 +40,9 @@ export default function TeamDetail() {
 
       <div className="squad-grid">
         {team.players.map(p => (
-          <div key={p.id} className="player-card">
+          <div className="player-card" key={p.id}>
             <h4>{p.name}</h4>
-            <p>{p.batting || "—"} | {p.bowling || "—"}</p>
+            <p>{p.batting} | {p.bowling}</p>
           </div>
         ))}
       </div>

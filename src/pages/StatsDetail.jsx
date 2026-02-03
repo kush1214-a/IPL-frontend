@@ -11,42 +11,32 @@ export default function StatsDetail() {
   useEffect(() => {
     if (!statType) return;
 
-    async function fetchStats() {
+    (async () => {
       try {
         const res = await api.get(`/stats/${statType}`);
-        const rawStats = res.data || [];
 
-        // ✅ REMOVE DUPLICATE PLAYERS
-        const uniqueMap = new Map();
+        // 🔥 REMOVE DUPLICATES BY PLAYER ID
+        const unique = [];
+        const seen = new Set();
 
-        rawStats.forEach((item) => {
-          if (!item.player?.id) return;
+        for (const row of res.data || []) {
+          const pid = row.player?.id;
+          if (!pid || seen.has(pid)) continue;
+          seen.add(pid);
+          unique.push(row);
+        }
 
-          // keep first occurrence only
-          if (!uniqueMap.has(item.player.id)) {
-            uniqueMap.set(item.player.id, item);
-          }
-        });
-
-        setStats(Array.from(uniqueMap.values()));
+        setStats(unique);
       } catch (err) {
-        console.error("❌ Stats fetch error", err);
+        console.error("Stats fetch error", err);
         setStats([]);
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchStats();
+    })();
   }, [statType]);
 
-  if (loading) {
-    return <h2 className="center">Loading...</h2>;
-  }
-
-  if (stats.length === 0) {
-    return <h2 className="center">No data available</h2>;
-  }
+  if (loading) return <h2 className="center">Loading...</h2>;
 
   const title = statType.replace(/_/g, " ").toUpperCase();
 
@@ -55,24 +45,19 @@ export default function StatsDetail() {
       <h1 className="stats-title">{title}</h1>
 
       <div className="stats-list">
-        {stats.map((item, index) => {
-          const value =
-            item.runs ??
-            item.highest ??
-            item.average ??
-            item.strike ??
-            item.fours ??
-            item.sixes ??
-            "-";
-
-          return (
-            <div key={item.player.id} className="stats-row">
-              <span className="rank">{index + 1}</span>
-              <span className="name">{item.player.name}</span>
-              <span className="value">{value}</span>
-            </div>
-          );
-        })}
+        {stats.map((item, i) => (
+          <div className="stats-row" key={item.player.id}>
+            <span className="rank">{i + 1}</span>
+            <span className="name">{item.player.name}</span>
+            <span className="value">
+              {item.runs ??
+               item.average ??
+               item.strikeRate ??
+               item.wickets ??
+               "-"}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

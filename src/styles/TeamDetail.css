@@ -1,69 +1,41 @@
-/* FULL BACKGROUND */
 .team-detail-page {
   min-height: 100vh;
-  padding: 40px 60px;
-  background: url("/ipl.jpg") center/cover no-repeat fixed;
+  padding: 40px;
+  background-size: cover;
+  background-position: center;
   color: #fff;
 }
 
-/* HEADER */
-.team-header {
+.team-banner {
   display: flex;
-  gap: 30px;
   align-items: center;
-  margin-bottom: 40px;
+  gap: 30px;
+  margin-bottom: 30px;
 }
 
-.team-logo {
+.team-banner img {
   width: 120px;
 }
 
-/* TEXT */
-.team-meta h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
+.team-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 40px;
 }
 
-.titles {
-  color: gold;
-  margin-bottom: 15px;
-}
-
-/* SQUAD */
 .squad-title {
-  margin: 30px 0 20px;
-  font-size: 26px;
+  margin-bottom: 20px;
 }
 
-/* GRID */
 .squad-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
-/* PLAYER CARD (NO DARK BOX) */
 .player-card {
-  padding: 15px;
+  background: rgba(0,0,0,0.55);
+  padding: 16px;
   border-radius: 12px;
-  backdrop-filter: blur(6px);
-  background: rgba(0, 0, 0, 0.35);
-  transition: transform 0.3s;
-}
-
-.player-card:hover {
-  transform: translateY(-5px);
-}
-
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .squad-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .squad-grid {
-    grid-template-columns: 1fr;
-  }
 }

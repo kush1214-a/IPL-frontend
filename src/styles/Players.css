@@ -1,101 +1,158 @@
-/* ================= PLAYERS PAGE ================= */
+/* ================= ROOT PAGE ================= */
 
 .players-page {
   min-height: calc(100vh - 64px);
-  background-size: cover;
-  background-position: center;
-  padding: 40px;
+  background:
+    radial-gradient(circle at center, #0b1f4b, #020b25 70%);
   display: flex;
   justify-content: center;
-  color: white;
+  padding: 60px 20px;
+  color: #fff;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* ===== PLAYER LIST ===== */
+/* ================= PLAYER LIST ================= */
 
 .players-list {
   width: 360px;
-  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .player-row {
-  background: rgba(0,0,0,0.55);
   padding: 14px 18px;
-  margin-bottom: 12px;
-  border-radius: 12px;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 40, 90, 0.75),
+    rgba(10, 25, 60, 0.75)
+  );
   cursor: pointer;
-  transition: 0.25s;
-}
-
-.player-row:hover {
-  background: rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
 }
 
 .player-row h4 {
+  font-size: 15px;
   margin-bottom: 4px;
 }
 
-/* ===== PAGINATION ===== */
+.player-row span {
+  font-size: 12px;
+  color: #ffd700;
+}
+
+.player-row:hover {
+  transform: translateX(6px);
+  background: linear-gradient(
+    180deg,
+    rgba(30, 70, 140, 0.9),
+    rgba(10, 35, 80, 0.9)
+  );
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.35);
+}
+
+/* ================= PAGINATION ================= */
 
 .pagination {
-  margin-top: 20px;
+  margin-top: 30px;
   display: flex;
-  gap: 12px;
   justify-content: center;
+  gap: 14px;
+  font-size: 14px;
 }
 
 .pagination button {
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: #fff;
   padding: 6px 14px;
   border-radius: 6px;
-  border: none;
   cursor: pointer;
 }
 
-/* ===== OVERLAY ===== */
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ================= OVERLAY ================= */
 
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(4px);
-  z-index: 10;
+  z-index: 9;
 }
 
-/* ===== SIDE POPUP ===== */
+/* ================= PLAYER POPUP ================= */
 
 .player-popup {
   position: fixed;
-  top: 64px;
-  right: 0;
-  width: 360px;
-  height: calc(100vh - 64px);
-  background: linear-gradient(180deg, #0b2c8f, #071a46);
-  padding: 26px 22px;
-  z-index: 11;
-  animation: slideIn 0.35s ease forwards;
+  top: 90px;
+  right: 40px;
+  width: 340px;
+  padding: 24px 22px;
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    #0d1e4a,
+    #061434
+  );
+  box-shadow:
+    0 0 40px rgba(0,0,0,0.6),
+    inset 0 0 1px rgba(255,255,255,0.2);
+  z-index: 10;
+  animation: fadeSlide 0.35s ease;
 }
 
-@keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+/* ANIMATION */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
+/* CLOSE BUTTON */
 .close {
   position: absolute;
   right: 14px;
   top: 12px;
   background: none;
   border: none;
-  color: white;
-  font-size: 22px;
+  color: #fff;
+  font-size: 18px;
   cursor: pointer;
 }
 
+/* HEADER */
+.player-popup h2 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
 .team {
+  font-size: 13px;
   color: #ffd700;
   margin-bottom: 16px;
 }
 
-/* ===== STATS ===== */
+/* ================= STATS ================= */
+
+.section-title {
+  margin: 14px 0 8px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #ffd700;
+  text-transform: uppercase;
+}
 
 .stats-grid {
   display: grid;
@@ -104,26 +161,43 @@
 }
 
 .stat-box {
-  background: rgba(255,255,255,0.1);
-  padding: 10px;
+  background: rgba(255,255,255,0.08);
   border-radius: 10px;
+  padding: 10px 8px;
   text-align: center;
 }
 
 .stat-box span {
-  font-size: 12px;
-  opacity: 0.8;
+  display: block;
+  font-size: 11px;
+  opacity: 0.75;
 }
 
-/* ===== SOCIALS ===== */
+.stat-box b {
+  font-size: 14px;
+}
+
+/* ================= SOCIAL ================= */
 
 .socials {
   display: flex;
   justify-content: space-around;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .socials a {
+  font-size: 13px;
   color: #38bdf8;
   text-decoration: none;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 900px) {
+  .player-popup {
+    right: 50%;
+    transform: translateX(50%);
+    top: auto;
+    bottom: 20px;
+  }
 }

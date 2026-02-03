@@ -2,6 +2,22 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/Players.css";
 
+/* ================= ROLE NORMALIZER ================= */
+
+function normalizeRole(role = "") {
+  const r = role.toLowerCase();
+
+  if (r.includes("bat")) return "BATTER";
+  if (r.includes("all")) return "ALLROUNDER";
+  if (r.includes("bowl")) return "BOWLER";
+  if (r.includes("keep") || r.includes("wk") || r.includes("wc"))
+    return "WICKET_KEEPER";
+
+  return "BATTER";
+}
+
+/* ================= MAIN COMPONENT ================= */
+
 export default function Players() {
   const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -17,76 +33,140 @@ export default function Players() {
         setPlayers(res.data.data || []);
         setTotalPages(res.data.totalPages || 1);
       } catch (err) {
-        console.error(err);
+        console.error("Players fetch error", err);
         setPlayers([]);
       } finally {
         setLoading(false);
       }
     }
+
     fetchPlayers();
   }, [page]);
 
   return (
-    <div
-      className="players-page"
-      style={{ backgroundImage: "url(/bg/ipl.jpg)" }}
-    >
-      {/* ===== PLAYER LIST ===== */}
+    <div className="players-page">
+      {/* ========== PLAYER LIST ========== */}
       <div className="players-list">
         {loading ? (
           <p className="center">Loading...</p>
         ) : (
-          players.map(p => (
+          players.map(player => (
             <div
-              key={p.id}
+              key={player.id}
               className="player-row"
-              onClick={() => setSelected(p)}
+              onClick={() => setSelected(player)}
             >
-              <h4>{p.name}</h4>
-              <span>{p.team?.name}</span>
+              <h4>{player.name}</h4>
+              <span>{player.team?.name}</span>
             </div>
           ))
         )}
 
         {/* PAGINATION */}
         <div className="pagination">
-          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+          <button
+            disabled={page === 1}
+            onClick={() => setPage(p => p - 1)}
+          >
             Prev
           </button>
           <span>{page} / {totalPages}</span>
-          <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage(p => p + 1)}
+          >
             Next
           </button>
         </div>
       </div>
 
-      {/* ===== SIDE POPUP ===== */}
+      {/* ========== RIGHT SIDE POPUP ========== */}
       {selected && (
         <>
           <div className="overlay" onClick={() => setSelected(null)} />
 
           <div className="player-popup">
-            <button className="close" onClick={() => setSelected(null)}>×</button>
+            <button className="close" onClick={() => setSelected(null)}>
+              ×
+            </button>
 
             <h2>{selected.name}</h2>
-            <p className="team">{selected.team?.name}</p>
+            <p className="team">
+              {selected.team?.name} • {selected.role}
+            </p>
 
-            <div className="stats-grid">
-              <Stat label="Matches" value={selected.stats?.[0]?.matches} />
-              <Stat label="Runs" value={selected.stats?.[0]?.runs} />
-              <Stat label="Fours" value={selected.stats?.[0]?.fours} />
-              <Stat label="Sixes" value={selected.stats?.[0]?.sixes} />
-              <Stat label="Best" value={selected.stats?.[0]?.highest} />
-              <Stat label="Average" value={selected.stats?.[0]?.average} />
-              <Stat label="Strike Rate" value={selected.stats?.[0]?.strike} />
+            <RoleBasedStats player={selected} />
+
+            <div className="socials">
+              <a href="#">Twitter</a>
+              <a href="#">Instagram</a>
+              <a href="#">Facebook</a>
             </div>
-
           </div>
         </>
       )}
     </div>
   );
 }
+
+/* ================= ROLE BASED STATS ================= */
+
+function RoleBasedStats({ player }) {
+  const role = normalizeRole(player.role || player.playingRole);
+  const s = player.stats?.[0] || {};
+
+  return (
+    <>
+      {/* ===== BATTTING ===== */}
+      {(role === "BATTER" ||
+        role === "ALLROUNDER" ||
+        role === "BOWLER" ||
+        role === "WICKET_KEEPER") && (
+        <>
+          <h4 className="section-title">Batting</h4>
+          <div className="stats-grid">
+            <Stat label="Matches" value={s.matches} />
+            <Stat label="Runs" value={s.runs} />
+            <Stat label="Best" value={s.highest} />
+            <Stat label="Average" value={s.average} />
+            <Stat label="Strike Rate" value={s.strike} />
+            <Stat label="Fours" value={s.fours} />
+            <Stat label="Sixes" value={s.sixes} />
+          </div>
+        </>
+      )}
+
+      {/* ===== BOWLING ===== */}
+      {(role === "BOWLER" ||
+        role === "ALLROUNDER" ||
+        role === "WICKET_KEEPER") && (
+        <>
+          <h4 className="section-title">Bowling</h4>
+          <div className="stats-grid">
+            <Stat label="Overs" value={s.overs} />
+            <Stat label="Wickets" value={s.wickets} />
+            <Stat label="Best" value={s.bestBowling} />
+            <Stat label="Economy" value={s.economy} />
+            <Stat label="Avg" value={s.bowlingAverage} />
+          </div>
+        </>
+      )}
+
+      {/* ===== WICKET KEEPING ===== */}
+      {role === "WICKET_KEEPER" && (
+        <>
+          <h4 className="section-title">Wicket Keeping</h4>
+          <div className="stats-grid">
+            <Stat label="Catches" value={s.catches} />
+            <Stat label="Stumpings" value={s.stumpings} />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+/* ================= SMALL STAT BOX ================= */
 
 const Stat = ({ label, value }) => (
   <div className="stat-box">

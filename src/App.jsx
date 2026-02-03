@@ -8,25 +8,36 @@ import Players from "./pages/Players";
 import Compare from "./pages/Compare";
 import StatsDetail from "./pages/StatsDetail";
 
-export default function App() {
+const App = () => {
   return (
     <>
       <Navbar />
 
       <Routes>
+        {/* HOME */}
         <Route path="/" element={<Home />} />
 
+        {/* TEAMS */}
         <Route path="/teams" element={<Teams />} />
         <Route path="/teams/:teamCode" element={<TeamDetail />} />
 
+        {/* PLAYERS */}
         <Route path="/players" element={<Players />} />
 
+        {/* STATS (🔥 THIS WAS MISSING 🔥) */}
         <Route path="/stats/:statType" element={<StatsDetail />} />
 
+        {/* COMPARE */}
         <Route path="/compare" element={<Compare />} />
 
-        <Route path="*" element={<h2>404 Page Not Found</h2>} />
+        {/* FALLBACK */}
+        <Route
+          path="*"
+          element={<h2 style={{ textAlign: "center" }}>404 Page Not Found</h2>}
+        />
       </Routes>
     </>
   );
-}
+};
+
+export default App;

@@ -1,183 +1,98 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
-import "../styles/Players.css";
-
-/* ================= ROLE DECIDER (FINAL & CORRECT) ================= */
-
-function getPlayerRole(player) {
-  const s = player.stats?.[0] || {};
-
-  const runs = Number(s.runs || 0);
-  const wickets = Number(s.wickets || 0);
-  const catches = Number(s.catches || 0);
-  const stumpings = Number(s.stumpings || 0);
-
-  // Wicket Keeper
-  if (catches > 0 || stumpings > 0) {
-    return "WICKET-KEEPER";
-  }
-
-  // All-rounder
-  if (runs > 0 && wickets > 0) {
-    return "ALL-ROUNDER";
-  }
-
-  // Bowler
-  if (wickets > 0 && runs === 0) {
-    return "BOWLER";
-  }
-
-  // Batter
-  return "BATTER";
-}
-
-/* ================= MAIN COMPONENT ================= */
+import axios from "axios";
+import "./Players.css";
 
 export default function Players() {
   const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchPlayers() {
-      try {
-        setLoading(true);
-        const res = await api.get(`/players?page=${page}`);
-        setPlayers(res.data.data || []);
-        setTotalPages(res.data.totalPages || 1);
-      } catch (err) {
-        console.error("Players fetch error", err);
-        setPlayers([]);
-      } finally {
-        setLoading(false);
-      }
-    }
+    axios.get("http://localhost:3000/api/players")
+      .then(res => setPlayers(res.data))
+      .catch(err => console.error(err));
+  }, []);
 
-    fetchPlayers();
-  }, [page]);
+  const getBatting = (stats) =>
+    stats.find(s => s.statType === "batting_t20");
+
+  const getBowling = (stats) =>
+    stats.find(s => s.statType === "bowling_t20");
+
+  const showBatting = (role) =>
+    ["BATTER", "ALL-ROUNDER", "BOWLER", "WICKET-KEEPER"].includes(role);
+
+  const showBowling = (role) =>
+    ["ALL-ROUNDER", "BOWLER", "WICKET-KEEPER"].includes(role);
 
   return (
     <div className="players-page">
-      {/* PLAYER LIST */}
       <div className="players-list">
-        {loading ? (
-          <p className="center">Loading...</p>
-        ) : (
-          players.map(player => (
-            <div
-              key={player.id}
-              className="player-row"
-              onClick={() => setSelected(player)}
-            >
-              <h4>{player.name}</h4>
-              <span>{player.team?.name}</span>
-            </div>
-          ))
-        )}
-
-        {/* PAGINATION */}
-        <div className="pagination">
-          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
-            Prev
-          </button>
-          <span>{page} / {totalPages}</span>
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(p => p + 1)}
+        {players.map(p => (
+          <div
+            key={p.id}
+            className="player-row"
+            onClick={() => setSelected(p)}
           >
-            Next
-          </button>
-        </div>
+            <h4>{p.name}</h4>
+            <span>{p.team?.name}</span>
+          </div>
+        ))}
       </div>
 
-      {/* RIGHT POPUP */}
       {selected && (
-        <>
-          <div className="overlay" onClick={() => setSelected(null)} />
+        <div className="player-modal">
+          <button className="close" onClick={() => setSelected(null)}>×</button>
 
-          <div className="player-popup">
-            <button className="close" onClick={() => setSelected(null)}>×</button>
+          <h2>{selected.name}</h2>
+          <p className="sub">
+            {selected.team?.name} • {selected.role}
+          </p>
 
-            <h2>{selected.name}</h2>
-            <p className="team">
-              {selected.team?.name} • {getPlayerRole(selected)}
-            </p>
+          {/* 🏏 BATTTING */}
+          {showBatting(selected.role) && getBatting(selected.stats) && (
+            <>
+              <h3>BATTTING</h3>
+              <div className="grid">
+                <Box label="Matches" value={getBatting(selected.stats).matches} />
+                <Box label="Runs" value={getBatting(selected.stats).runs} />
+                <Box label="Best" value={getBatting(selected.stats).highest} />
+                <Box label="Average" value={getBatting(selected.stats).average ?? "-"} />
+                <Box label="Strike Rate" value={getBatting(selected.stats).strike ?? "-"} />
+                <Box label="Fours" value={getBatting(selected.stats).fours} />
+                <Box label="Sixes" value={getBatting(selected.stats).sixes} />
+              </div>
+            </>
+          )}
 
-            <RoleBasedStats player={selected} />
+          {/* 🎯 BOWLING */}
+          {showBowling(selected.role) && getBowling(selected.stats) && (
+            <>
+              <h3>BOWLING</h3>
+              <div className="grid">
+                <Box label="Matches" value={getBowling(selected.stats).matches} />
+                <Box label="Wickets" value={getBowling(selected.stats).wickets} />
+                <Box label="Economy" value={getBowling(selected.stats).average ?? "-"} />
+                <Box label="Strike" value={getBowling(selected.stats).strike ?? "-"} />
+              </div>
+            </>
+          )}
 
-            <div className="socials">
-              <a href="#">Twitter</a>
-              <a href="#">Instagram</a>
-              <a href="#">Facebook</a>
-            </div>
+          <div className="social">
+            <span>Twitter</span>
+            <span>Instagram</span>
+            <span>Facebook</span>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
 }
 
-/* ================= ROLE BASED STATS ================= */
-
-function RoleBasedStats({ player }) {
-  const role = getPlayerRole(player);
-  const s = player.stats?.[0] || {};
-
+function Box({ label, value }) {
   return (
-    <>
-      {/* BATTTING */}
-      {(role === "BATTER" ||
-        role === "ALL-ROUNDER" ||
-        role === "WICKET-KEEPER") && (
-        <>
-          <h4 className="section-title">Batting</h4>
-          <div className="stats-grid">
-            <Stat label="Matches" value={s.matches} />
-            <Stat label="Runs" value={s.runs} />
-            <Stat label="Best" value={s.highest} />
-            <Stat label="Average" value={s.average} />
-            <Stat label="Strike Rate" value={s.strike} />
-            <Stat label="Fours" value={s.fours} />
-            <Stat label="Sixes" value={s.sixes} />
-          </div>
-        </>
-      )}
-
-      {/* BOWLING */}
-      {(role === "BOWLER" || role === "ALL-ROUNDER") && (
-        <>
-          <h4 className="section-title">Bowling</h4>
-          <div className="stats-grid">
-            <Stat label="Overs" value={s.overs} />
-            <Stat label="Wickets" value={s.wickets} />
-            <Stat label="Best" value={s.bestBowling} />
-            <Stat label="Economy" value={s.economy} />
-            <Stat label="Avg" value={s.bowlingAverage} />
-          </div>
-        </>
-      )}
-
-      {/* WICKET KEEPING */}
-      {role === "WICKET-KEEPER" && (
-        <>
-          <h4 className="section-title">Wicket Keeping</h4>
-          <div className="stats-grid">
-            <Stat label="Catches" value={s.catches} />
-            <Stat label="Stumpings" value={s.stumpings} />
-          </div>
-        </>
-      )}
-    </>
+    <div className="stat-box">
+      <small>{label}</small>
+      <strong>{value}</strong>
+    </div>
   );
 }
-
-/* ================= STAT BOX ================= */
-
-const Stat = ({ label, value }) => (
-  <div className="stat-box">
-    <span>{label}</span>
-    <b>{value ?? "-"}</b>
-  </div>
-);

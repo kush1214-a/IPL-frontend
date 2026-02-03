@@ -1,43 +1,41 @@
+/* ================= STATS PAGE ================= */
+
 .stats-page {
   min-height: calc(100vh - 64px);
-  padding: 50px 80px;
+  padding: 50px 20px;
   background: linear-gradient(180deg, #020b25, #000814);
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stats-title {
-  text-align: center;
   font-size: 36px;
   font-weight: 900;
-  letter-spacing: 2px;
   margin-bottom: 40px;
+  text-align: center;
 }
 
 .leaderboard {
+  width: 100%;
   max-width: 900px;
-  margin: 0 auto;
 }
 
 .leader-row {
   display: grid;
-  grid-template-columns: 80px 1fr 120px;
+  grid-template-columns: 70px 1fr 100px;
   align-items: center;
-  padding: 18px 24px;
+  padding: 16px 22px;
   margin-bottom: 14px;
   background: linear-gradient(180deg, #0d2a7a, #06153a);
   border-radius: 14px;
-  transition: all 0.3s ease;
-}
-
-.leader-row:hover {
-  transform: translateY(-4px);
-  background: linear-gradient(180deg, #133a9c, #0a1f55);
 }
 
 .rank {
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 900;
-  color: #ffffff33;
+  color: #ffffff44;
 }
 
 .player-name {
@@ -46,27 +44,8 @@
 }
 
 .stat-value {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 900;
   color: #ffb703;
   text-align: right;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .stats-page {
-    padding: 30px 20px;
-  }
-
-  .leader-row {
-    grid-template-columns: 50px 1fr 80px;
-  }
-
-  .rank {
-    font-size: 26px;
-  }
-
-  .stat-value {
-    font-size: 22px;
-  }
 }

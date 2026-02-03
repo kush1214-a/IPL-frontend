@@ -1,15 +1,19 @@
+/* ================= COMPARE PAGE ================= */
+
 .compare-page {
+  min-height: calc(100vh - 64px);
   background: white;
-  min-height: 100vh;
-  padding: 40px;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: auto;
   text-align: center;
 }
 
 .compare-cards {
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 40px;
+  flex-wrap: wrap;
   margin: 40px 0;
 }
 
@@ -21,24 +25,8 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-.compare-team img {
-  height: 90px;
-}
-
 .vs {
   font-size: 28px;
   font-weight: 800;
   color: #ff5722;
-}
-
-.compare-stats {
-  max-width: 600px;
-  margin: auto;
-}
-
-.compare-stats div {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  padding: 12px 0;
-  border-bottom: 1px solid #ddd;
 }

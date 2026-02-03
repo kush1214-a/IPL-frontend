@@ -2,26 +2,22 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/Players.css";
 
-const ITEMS_PER_PAGE = 8;
-
 export default function Players() {
   const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  /* ================= FETCH PLAYERS ================= */
   useEffect(() => {
     api
-      .get("/players")
+      .get(`/players?page=${page}`)
       .then((res) => {
         setPlayers(res.data?.data || []);
+        setTotalPages(res.data?.totalPages || 1);
       })
       .catch((err) => console.error("Players fetch error", err));
-  }, []);
-
-  /* ================= PAGINATION ================= */
-  const totalPages = Math.ceil(players.length / ITEMS_PER_PAGE);
-  const start = (page - 1) * ITEMS_PER_PAGE;
-  const currentPlayers = players.slice(start, start + ITEMS_PER_PAGE);
+  }, [page]);
 
   /* ================= HELPERS ================= */
   const getBatting = (stats) =>
@@ -34,7 +30,7 @@ export default function Players() {
     <div className="players-page">
       {/* LEFT LIST */}
       <div className="players-list">
-        {currentPlayers.map((p) => (
+        {players.map((p) => (
           <div
             key={p.id}
             className="player-row"
@@ -54,7 +50,7 @@ export default function Players() {
           </div>
         ))}
 
-        {/* ===== PAGINATION ===== */}
+        {/* ================= PAGINATION ================= */}
         {totalPages > 1 && (
           <div className="pagination">
             <button
@@ -78,7 +74,7 @@ export default function Players() {
         )}
       </div>
 
-      {/* RIGHT POPUP */}
+      {/* ================= PLAYER POPUP ================= */}
       {selected && (
         <>
           <div className="overlay" onClick={() => setSelected(null)} />
@@ -96,7 +92,7 @@ export default function Players() {
               </span>
             </p>
 
-            {/* BATTTING */}
+            {/* BATTING */}
             {["BATTER", "ALL-ROUNDER", "WICKET-KEEPER"].includes(selected.role) &&
               getBatting(selected.stats) && (
                 <>
@@ -133,7 +129,7 @@ export default function Players() {
   );
 }
 
-/* SMALL STAT BOX */
+/* ================= SMALL STAT ================= */
 function Stat({ label, value }) {
   return (
     <div className="stat-box">

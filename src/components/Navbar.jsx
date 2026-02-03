@@ -27,9 +27,6 @@ export default function Navbar() {
         <NavLink to="/compare" className="ipl-link">
           COMPARE
         </NavLink>
-        <NavLink to="/charts" className="ipl-link">
-          CHARTS
-        </NavLink>
       </nav>
     </header>
   );

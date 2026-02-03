@@ -44,61 +44,42 @@
   color: #ffd54f;
 }
 
-/* ===== SQUAD SECTION ===== */
-
-.players-section {
-  margin-top: 50px;
-}
-
+/* ===== PLAYERS ===== */
 .players-section h2 {
-  color: #fff;
-  margin-bottom: 20px;
-  font-size: 26px;
+  font-size: 28px;
+  margin-bottom: 25px;
   letter-spacing: 1px;
 }
 
-/* GRID */
 .players-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 18px;
 }
 
-/* CARD */
 .player-card {
-  background: linear-gradient(145deg, #0b0b0b, #1a1a1a);
+  background: linear-gradient(180deg, #0d2a7a, #06153a);
+  padding: 16px 18px;
   border-radius: 14px;
-  padding: 18px 16px;
-  min-height: 110px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .player-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+  transform: translateY(-5px);
+  box-shadow: 0 0 18px rgba(255, 215, 79, 0.4);
 }
 
-/* NAME */
 .player-name {
-  color: #ffffff;
-  font-size: 16px;
   font-weight: 700;
-  margin-bottom: 8px;
-  line-height: 1.2;
+  font-size: 15px;
+  margin-bottom: 6px;
 }
 
-/* ROLE */
 .player-role {
   font-size: 13px;
-  color: #b8c7ff;
-  line-height: 1.4;
+  opacity: 0.85;
 }
-
 
 /* ===== STATES ===== */
 .team-loading,

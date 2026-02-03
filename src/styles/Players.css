@@ -1,71 +1,43 @@
 .players-page {
   min-height: 100vh;
-  padding: 40px;
   background: radial-gradient(circle, #061a44, #020b25);
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px;
   color: white;
 }
 
-/* LIST */
 .players-list {
-  max-width: 420px;
-  margin: auto;
+  width: 320px;
 }
 
 .player-row {
-  background: #0b1437;
-  padding: 14px 16px;
+  padding: 14px;
   margin-bottom: 10px;
+  background: rgba(0,0,0,0.5);
   border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .player-row:hover {
-  background: #13206b;
-}
-
-.player-row h4 {
-  margin: 0;
+  background: rgba(255,255,255,0.08);
 }
 
 .player-row span {
+  color: #facc15;
   font-size: 13px;
-  color: #f5c518;
 }
 
-/* PAGINATION */
-.pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-.pagination button {
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* DETAIL PANEL */
 .player-detail {
-  position: fixed;
-  right: 30px;
-  top: 120px;
-  width: 300px;
-  background: #0b1437;
+  width: 320px;
+  background: rgba(0,0,0,0.65);
+  border-radius: 16px;
   padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  position: relative;
 }
 
-.player-detail .close {
+.close {
   position: absolute;
   right: 12px;
   top: 10px;
@@ -76,13 +48,32 @@
   cursor: pointer;
 }
 
-.player-detail .team {
-  color: #f5c518;
+.team {
+  color: #facc15;
   margin-bottom: 10px;
 }
 
-.socials a {
-  margin-right: 12px;
-  color: #4ea1ff;
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.social {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.social a {
+  color: #38bdf8;
   text-decoration: none;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 30px;
+  display: flex;
+  gap: 10px;
 }

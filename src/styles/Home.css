@@ -30,15 +30,8 @@
 /* GRID */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.stats-grid > :last-child {
-  grid-column: 2 / 3;
 }
 
 /* STAT CARD */

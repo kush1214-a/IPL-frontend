@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/Players.css";
 
+const ITEMS_PER_PAGE = 8;
+
 export default function Players() {
   const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     api
@@ -15,6 +18,12 @@ export default function Players() {
       .catch((err) => console.error("Players fetch error", err));
   }, []);
 
+  /* ================= PAGINATION ================= */
+  const totalPages = Math.ceil(players.length / ITEMS_PER_PAGE);
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const currentPlayers = players.slice(start, start + ITEMS_PER_PAGE);
+
+  /* ================= HELPERS ================= */
   const getBatting = (stats) =>
     stats?.find((s) => s.statType.startsWith("batting"));
 
@@ -25,7 +34,7 @@ export default function Players() {
     <div className="players-page">
       {/* LEFT LIST */}
       <div className="players-list">
-        {players.map((p) => (
+        {currentPlayers.map((p) => (
           <div
             key={p.id}
             className="player-row"
@@ -41,11 +50,32 @@ export default function Players() {
               )}
             </h4>
 
-            <span className="team-name">
-              {p.team?.name}
-            </span>
+            <span className="team-name">{p.team?.name}</span>
           </div>
         ))}
+
+        {/* ===== PAGINATION ===== */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+            >
+              ◀ Prev
+            </button>
+
+            <span>
+              Page {page} of {totalPages}
+            </span>
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next ▶
+            </button>
+          </div>
+        )}
       </div>
 
       {/* RIGHT POPUP */}

@@ -4,35 +4,38 @@ import "../styles/Compare.css";
 
 export default function Compare() {
   const [teams, setTeams] = useState([]);
-  const [teamA, setTeamA] = useState(null);
-  const [teamB, setTeamB] = useState(null);
+  const [teamA, setTeamA] = useState("");
+  const [teamB, setTeamB] = useState("");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  // load teams in dropdown
   useEffect(() => {
-    api.get("/teams").then((res) => {
-      setTeams(res.data || []);
-    });
+    api.get("/teams").then((res) => setTeams(res.data));
   }, []);
 
-  const handleSelectA = (id) => {
-    const t = teams.find((x) => x.id === Number(id));
-    setTeamA(t || null);
-  };
+  // compare teams
+  useEffect(() => {
+    if (!teamA || !teamB) return;
 
-  const handleSelectB = (id) => {
-    const t = teams.find((x) => x.id === Number(id));
-    setTeamB(t || null);
-  };
+    setLoading(true);
+    api
+      .get(`/compare?teamA=${teamA}&teamB=${teamB}`)
+      .then((res) => setResult(res.data))
+      .catch(() => setResult(null))
+      .finally(() => setLoading(false));
+  }, [teamA, teamB]);
 
   return (
     <div className="compare-page">
       <h1 className="compare-title">HEAD TO HEAD</h1>
 
-      {/* DROPDOWNS */}
-      <div className="compare-selectors">
-        <select onChange={(e) => handleSelectA(e.target.value)}>
+      {/* TEAM SELECT */}
+      <div className="compare-select">
+        <select value={teamA} onChange={(e) => setTeamA(e.target.value)}>
           <option value="">+ Add Team</option>
           {teams.map((t) => (
-            <option key={t.id} value={t.id}>
+            <option key={t.id} value={t.short}>
               {t.name}
             </option>
           ))}
@@ -40,60 +43,49 @@ export default function Compare() {
 
         <span className="vs">VS</span>
 
-        <select onChange={(e) => handleSelectB(e.target.value)}>
+        <select value={teamB} onChange={(e) => setTeamB(e.target.value)}>
           <option value="">+ Add Team</option>
           {teams.map((t) => (
-            <option key={t.id} value={t.id}>
+            <option key={t.id} value={t.short}>
               {t.name}
             </option>
           ))}
         </select>
       </div>
 
-      {/* CARDS */}
-      <div className="compare-cards">
-        <TeamCard team={teamA} />
-        <TeamCard team={teamB} />
-      </div>
+      {/* LOADING */}
+      {loading && <p className="loading">Comparing teams...</p>}
 
-      {/* COMPARISON */}
-      {teamA && teamB && (
-        <div className="compare-stats">
-          <StatRow label="Players" a={teamA.playersCount} b={teamB.playersCount} />
-          <StatRow label="Total Matches" a={teamA.totalMatches} b={teamB.totalMatches} />
-          <StatRow label="Total Runs" a={teamA.totalRuns} b={teamB.totalRuns} />
-          <StatRow label="Total Wickets" a={teamA.totalWickets} b={teamB.totalWickets} />
+      {/* RESULT */}
+      {result && (
+        <div className="compare-result">
+          {result.map((team) => (
+            <div key={team.short} className="compare-card">
+              <h2>{team.name}</h2>
+
+              <div className="compare-stat">
+                <span>Players</span>
+                <b>{team.players}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Matches</span>
+                <b>{team.totalMatches}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Runs</span>
+                <b>{team.totalRuns}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Wickets</span>
+                <b>{team.totalWickets}</b>
+              </div>
+            </div>
+          ))}
         </div>
       )}
-    </div>
-  );
-}
-
-/* TEAM CARD */
-function TeamCard({ team }) {
-  if (!team) {
-    return (
-      <div className="team-card empty">
-        <p>Select Team</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="team-card">
-      <img src={team.logo} alt={team.name} />
-      <h3>{team.name}</h3>
-    </div>
-  );
-}
-
-/* STAT ROW */
-function StatRow({ label, a, b }) {
-  return (
-    <div className="stat-row">
-      <span>{a ?? "-"}</span>
-      <b>{label}</b>
-      <span>{b ?? "-"}</span>
     </div>
   );
 }

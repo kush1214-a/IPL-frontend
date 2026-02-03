@@ -10,17 +10,16 @@ export default function Players() {
     api
       .get("/players")
       .then((res) => {
-        // backend response: { data, page, totalPages }
         setPlayers(res.data?.data || []);
       })
       .catch((err) => console.error("Players fetch error", err));
   }, []);
 
   const getBatting = (stats) =>
-    stats.find((s) => s.statType.startsWith("batting"));
+    stats?.find((s) => s.statType.startsWith("batting"));
 
   const getBowling = (stats) =>
-    stats.find((s) => s.statType.startsWith("bowling"));
+    stats?.find((s) => s.statType.startsWith("bowling"));
 
   return (
     <div className="players-page">
@@ -32,12 +31,18 @@ export default function Players() {
             className="player-row"
             onClick={() => setSelected(p)}
           >
-            <h4>{p.name}</h4>
-            <span>
-              {p.team?.name} •{" "}
-              <strong className={`role role-${p.role?.toLowerCase()}`}>
-                {p.role}
-              </strong>
+            {/* NAME + ROLE */}
+            <h4 className="player-name">
+              {p.name}
+              {p.role && (
+                <span className={`role role-${p.role.toLowerCase()}`}>
+                  {p.role}
+                </span>
+              )}
+            </h4>
+
+            <span className="team-name">
+              {p.team?.name}
             </span>
           </div>
         ))}
@@ -62,7 +67,7 @@ export default function Players() {
             </p>
 
             {/* BATTTING */}
-            {["BATTER", "ALL-ROUNDER"].includes(selected.role) &&
+            {["BATTER", "ALL-ROUNDER", "WICKET-KEEPER"].includes(selected.role) &&
               getBatting(selected.stats) && (
                 <>
                   <div className="section-title">BATTING</div>
@@ -79,7 +84,7 @@ export default function Players() {
               )}
 
             {/* BOWLING */}
-            {["BOWLER", "ALL-ROUNDER"].includes(selected.role) &&
+            {["BOWLER", "ALL-ROUNDER", "WICKET-KEEPER"].includes(selected.role) &&
               getBowling(selected.stats) && (
                 <>
                   <div className="section-title">BOWLING</div>

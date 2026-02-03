@@ -2,8 +2,7 @@
 
 .players-page {
   min-height: calc(100vh - 64px);
-  background:
-    radial-gradient(circle at center, #0b1f4b, #020b25 70%);
+  background: radial-gradient(circle at center, #0b1f4b, #020b25 70%);
   display: flex;
   justify-content: center;
   padding: 60px 20px;
@@ -33,16 +32,6 @@
   transition: all 0.3s ease;
 }
 
-.player-row h4 {
-  font-size: 15px;
-  margin-bottom: 4px;
-}
-
-.player-row span {
-  font-size: 12px;
-  color: #ffd700;
-}
-
 .player-row:hover {
   transform: translateX(6px);
   background: linear-gradient(
@@ -53,29 +42,48 @@
   box-shadow: 0 0 18px rgba(255, 215, 0, 0.35);
 }
 
-/* ================= PAGINATION ================= */
-
-.pagination {
-  margin-top: 30px;
+/* NAME + ROLE */
+.player-name {
   display: flex;
-  justify-content: center;
-  gap: 14px;
-  font-size: 14px;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  margin-bottom: 4px;
 }
 
+.team-name {
+  font-size: 12px;
+  color: #ffd700;
+}
 
-.pagination button {
-  background: rgba(255,255,255,0.08);
-  border: none;
-  color: #fff;
-  padding: 6px 14px;
+/* ================= ROLE BADGES ================= */
+
+.role {
+  padding: 2px 8px;
   border-radius: 6px;
-  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-.pagination button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.role-batter {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.role-bowler {
+  background: #7c2d12;
+  color: #fff;
+}
+
+.role-all-rounder {
+  background: #166534;
+  color: #fff;
+}
+
+.role-wicket-keeper {
+  background: #b45309;
+  color: #fff;
 }
 
 /* ================= OVERLAY ================= */
@@ -83,7 +91,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
   z-index: 9;
 }
@@ -97,19 +105,12 @@
   width: 340px;
   padding: 24px 22px;
   border-radius: 18px;
-  background: linear-gradient(
-    180deg,
-    #0d1e4a,
-    #061434
-  );
-  box-shadow:
-    0 0 40px rgba(0,0,0,0.6),
-    inset 0 0 1px rgba(255,255,255,0.2);
+  background: linear-gradient(180deg, #0d1e4a, #061434);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
   z-index: 10;
   animation: fadeSlide 0.35s ease;
 }
 
-/* ANIMATION */
 @keyframes fadeSlide {
   from {
     opacity: 0;
@@ -121,7 +122,6 @@
   }
 }
 
-/* CLOSE BUTTON */
 .close {
   position: absolute;
   right: 14px;
@@ -133,7 +133,6 @@
   cursor: pointer;
 }
 
-/* HEADER */
 .player-popup h2 {
   font-size: 18px;
   margin-bottom: 6px;
@@ -162,7 +161,7 @@
 }
 
 .stat-box {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   padding: 10px 8px;
   text-align: center;
@@ -178,20 +177,6 @@
   font-size: 14px;
 }
 
-/* ================= SOCIAL ================= */
-
-.socials {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 18px;
-}
-
-.socials a {
-  font-size: 13px;
-  color: #38bdf8;
-  text-decoration: none;
-}
-
 /* ================= MOBILE ================= */
 
 @media (max-width: 900px) {
@@ -201,29 +186,4 @@
     top: auto;
     bottom: 20px;
   }
-}
-.role {
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.role-batter {
-  background: #1d4ed8;
-  color: #fff;
-}
-
-.role-bowler {
-  background: #7c2d12;
-  color: #fff;
-}
-
-.role-all-rounder {
-  background: #166534;
-  color: #fff;
-}
-.role-wicket-keeper {
-  background: #b45309;
-  color: #fff;
 }

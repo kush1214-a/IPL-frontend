@@ -15,18 +15,27 @@ export default function StatsDetail() {
       try {
         const res = await api.get(`/stats/${statType}`);
 
-        // 🔥 REMOVE DUPLICATES BY PLAYER ID
-        const unique = [];
-        const seen = new Set();
+        // ✅ STEP 1: Sort DESC by value
+        const sorted = [...res.data].sort((a, b) => {
+          const va =
+            a.runs ??
+            a.average ??
+            a.strikeRate ??
+            a.wickets ??
+            0;
 
-        for (const row of res.data || []) {
-          const pid = row.player?.id;
-          if (!pid || seen.has(pid)) continue;
-          seen.add(pid);
-          unique.push(row);
-        }
+          const vb =
+            b.runs ??
+            b.average ??
+            b.strikeRate ??
+            b.wickets ??
+            0;
 
-        setStats(unique);
+          return vb - va;
+        });
+
+        // ✅ STEP 2: Take TOP 20 (NOT unique by player)
+        setStats(sorted.slice(0, 20));
       } catch (err) {
         console.error("Stats fetch error", err);
         setStats([]);
@@ -46,9 +55,11 @@ export default function StatsDetail() {
 
       <div className="stats-list">
         {stats.map((item, i) => (
-          <div className="stats-row" key={item.player.id}>
+          <div className="stats-row" key={i}>
             <span className="rank">{i + 1}</span>
-            <span className="name">{item.player.name}</span>
+            <span className="name">
+              {item.player?.name || "Unknown"}
+            </span>
             <span className="value">
               {item.runs ??
                item.average ??

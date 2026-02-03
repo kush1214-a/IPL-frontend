@@ -14,12 +14,20 @@
   font-weight: 700;
 }
 
-/* GRID FIX (IMPORTANT) */
+/* GRID */
 .teams-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* ✅ FIXED 3 PER ROW */
   gap: 30px;
+  justify-items: center; /* ✅ CENTER CARDS */
 }
+
+/* CARD WIDTH FIX */
+.team-card {
+  width: 100%;
+  max-width: 280px; /* ✅ uniform card size */
+}
+
 
 /* CARD */
 .team-card {
@@ -57,4 +65,17 @@
   font-size: 14px;
   color: #ffd700;
   font-weight: 600;
+}
+/* Tablet */
+@media (max-width: 1024px) {
+  .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
 }

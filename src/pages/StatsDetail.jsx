@@ -3,16 +3,32 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/StatsDetail.css";
 
-const StatsDetail = () => {
+export default function StatsDetail() {
   const { statType } = useParams();
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!statType) return;
+
     async function fetchStats() {
       try {
         const res = await api.get(`/stats/${statType}`);
-        setStats(res.data || []);
+        const rawStats = res.data || [];
+
+        // ✅ REMOVE DUPLICATE PLAYERS
+        const uniqueMap = new Map();
+
+        rawStats.forEach((item) => {
+          if (!item.player?.id) return;
+
+          // keep first occurrence only
+          if (!uniqueMap.has(item.player.id)) {
+            uniqueMap.set(item.player.id, item);
+          }
+        });
+
+        setStats(Array.from(uniqueMap.values()));
       } catch (err) {
         console.error("❌ Stats fetch error", err);
         setStats([]);
@@ -24,21 +40,21 @@ const StatsDetail = () => {
     fetchStats();
   }, [statType]);
 
-  const title = statType.replace(/_/g, " ").toUpperCase();
-
   if (loading) {
-    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    return <h2 className="center">Loading...</h2>;
   }
 
   if (stats.length === 0) {
-    return <h2 style={{ textAlign: "center" }}>No data available</h2>;
+    return <h2 className="center">No data available</h2>;
   }
+
+  const title = statType.replace(/_/g, " ").toUpperCase();
 
   return (
     <div className="stats-page">
       <h1 className="stats-title">{title}</h1>
 
-      <div className="leaderboard">
+      <div className="stats-list">
         {stats.map((item, index) => {
           const value =
             item.runs ??
@@ -50,18 +66,14 @@ const StatsDetail = () => {
             "-";
 
           return (
-            <div key={item.id} className="leader-row">
-              <div className="rank">{index + 1}</div>
-              <div className="player-name">
-                {item.player?.name || "Unknown Player"}
-              </div>
-              <div className="stat-value">{value}</div>
+            <div key={item.player.id} className="stats-row">
+              <span className="rank">{index + 1}</span>
+              <span className="name">{item.player.name}</span>
+              <span className="value">{value}</span>
             </div>
           );
         })}
       </div>
     </div>
   );
-};
-
-export default StatsDetail;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import "./Players.css";
+import "../styles/Players.css";
 
 export default function Players() {
   const [players, setPlayers] = useState([]);

@@ -7,41 +7,75 @@ export default function Players() {
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get(`/players?page=${page}`).then(res => {
-      setPlayers(res.data.data || []);
-      setTotalPages(res.data.totalPages || 1);
-    });
+    async function fetchPlayers() {
+      try {
+        setLoading(true);
+        const res = await api.get(`/players?page=${page}`);
+        setPlayers(res.data.data || []);
+        setTotalPages(res.data.totalPages || 1);
+      } catch (err) {
+        console.error("Players fetch error", err);
+        setPlayers([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPlayers();
   }, [page]);
 
   return (
     <div className="players-page">
 
-      <div className="player-list">
-        {players.map(p => (
-          <div
-            key={p.id}
-            className="player-row"
-            onClick={() => setSelected(p)}
-          >
-            <h4>{p.name}</h4>
-            <span>{p.team?.name}</span>
-          </div>
-        ))}
+      {/* ===== PLAYER LIST ===== */}
+      <div className="players-list">
+        {loading ? (
+          <p className="center">Loading...</p>
+        ) : (
+          players.map(p => (
+            <div
+              key={p.id}
+              className="player-row"
+              onClick={() => setSelected(p)}
+            >
+              <h4>{p.name}</h4>
+              <span>{p.team?.name}</span>
+            </div>
+          ))
+        )}
       </div>
 
-      {/* Pagination (only Prev / Next) */}
+      {/* ===== PAGINATION ===== */}
       <div className="pagination">
-        <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>Prev</button>
-        <span>{page}</span>
-        <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>Next</button>
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(p => p - 1)}
+        >
+          Prev
+        </button>
+
+        <span>{page} / {totalPages}</span>
+
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(p => p + 1)}
+        >
+          Next
+        </button>
       </div>
 
-      {/* Player Detail Panel */}
+      {/* ===== PLAYER DETAIL ===== */}
       {selected && (
         <div className="player-detail">
-          <button className="close" onClick={() => setSelected(null)}>×</button>
+          <button
+            className="close"
+            onClick={() => setSelected(null)}
+          >
+            ×
+          </button>
 
           <h2>{selected.name}</h2>
           <p className="team">{selected.team?.name}</p>
@@ -52,8 +86,8 @@ export default function Players() {
             <Stat label="Fours" value={selected.stats?.[0]?.fours} />
             <Stat label="Sixes" value={selected.stats?.[0]?.sixes} />
             <Stat label="Best" value={selected.stats?.[0]?.highest} />
-            <Stat label="Avg" value={selected.stats?.[0]?.average} />
-            <Stat label="SR" value={selected.stats?.[0]?.strike} />
+            <Stat label="Average" value={selected.stats?.[0]?.average} />
+            <Stat label="Strike Rate" value={selected.stats?.[0]?.strike} />
           </div>
 
           <div className="socials">

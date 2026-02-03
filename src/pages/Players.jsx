@@ -17,19 +17,20 @@ export default function Players() {
         setPlayers(res.data.data || []);
         setTotalPages(res.data.totalPages || 1);
       } catch (err) {
-        console.error("Players fetch error", err);
+        console.error(err);
         setPlayers([]);
       } finally {
         setLoading(false);
       }
     }
-
     fetchPlayers();
   }, [page]);
 
   return (
-    <div className="players-page">
-
+    <div
+      className="players-page"
+      style={{ backgroundImage: "url(/bg/ipl.jpg)" }}
+    >
       {/* ===== PLAYER LIST ===== */}
       <div className="players-list">
         {loading ? (
@@ -46,56 +47,42 @@ export default function Players() {
             </div>
           ))
         )}
-      </div>
 
-      {/* ===== PAGINATION ===== */}
-      <div className="pagination">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage(p => p - 1)}
-        >
-          Prev
-        </button>
-
-        <span>{page} / {totalPages}</span>
-
-        <button
-          disabled={page === totalPages}
-          onClick={() => setPage(p => p + 1)}
-        >
-          Next
-        </button>
-      </div>
-
-      {/* ===== PLAYER DETAIL ===== */}
-      {selected && (
-        <div className="player-detail">
-          <button
-            className="close"
-            onClick={() => setSelected(null)}
-          >
-            ×
+        {/* PAGINATION */}
+        <div className="pagination">
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+            Prev
           </button>
-
-          <h2>{selected.name}</h2>
-          <p className="team">{selected.team?.name}</p>
-
-          <div className="stats-grid">
-            <Stat label="Matches" value={selected.stats?.[0]?.matches} />
-            <Stat label="Runs" value={selected.stats?.[0]?.runs} />
-            <Stat label="Fours" value={selected.stats?.[0]?.fours} />
-            <Stat label="Sixes" value={selected.stats?.[0]?.sixes} />
-            <Stat label="Best" value={selected.stats?.[0]?.highest} />
-            <Stat label="Average" value={selected.stats?.[0]?.average} />
-            <Stat label="Strike Rate" value={selected.stats?.[0]?.strike} />
-          </div>
-
-          <div className="socials">
-            <a href={`https://twitter.com/${selected.name}`} target="_blank">Twitter</a>
-            <a href={`https://instagram.com/${selected.name}`} target="_blank">Instagram</a>
-            <a href={`https://facebook.com/${selected.name}`} target="_blank">Facebook</a>
-          </div>
+          <span>{page} / {totalPages}</span>
+          <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>
+            Next
+          </button>
         </div>
+      </div>
+
+      {/* ===== SIDE POPUP ===== */}
+      {selected && (
+        <>
+          <div className="overlay" onClick={() => setSelected(null)} />
+
+          <div className="player-popup">
+            <button className="close" onClick={() => setSelected(null)}>×</button>
+
+            <h2>{selected.name}</h2>
+            <p className="team">{selected.team?.name}</p>
+
+            <div className="stats-grid">
+              <Stat label="Matches" value={selected.stats?.[0]?.matches} />
+              <Stat label="Runs" value={selected.stats?.[0]?.runs} />
+              <Stat label="Fours" value={selected.stats?.[0]?.fours} />
+              <Stat label="Sixes" value={selected.stats?.[0]?.sixes} />
+              <Stat label="Best" value={selected.stats?.[0]?.highest} />
+              <Stat label="Average" value={selected.stats?.[0]?.average} />
+              <Stat label="Strike Rate" value={selected.stats?.[0]?.strike} />
+            </div>
+
+          </div>
+        </>
       )}
     </div>
   );

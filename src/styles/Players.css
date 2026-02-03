@@ -1,42 +1,129 @@
+/* ================= PLAYERS PAGE ================= */
+
 .players-page {
   min-height: calc(100vh - 64px);
-  background: radial-gradient(circle, #061a44, #020b25);
-  padding: 40px 20px;
-  max-width: 1200px;
-  margin: auto;
+  background-size: cover;
+  background-position: center;
+  padding: 40px;
   display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
   justify-content: center;
   color: white;
 }
 
-.players-list,
-.player-detail {
-  width: 320px;
+/* ===== PLAYER LIST ===== */
+
+.players-list {
+  width: 360px;
+  backdrop-filter: blur(6px);
 }
 
 .player-row {
-  padding: 14px;
-  margin-bottom: 10px;
-  background: rgba(0,0,0,0.5);
-  border-radius: 10px;
+  background: rgba(0,0,0,0.55);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-radius: 12px;
   cursor: pointer;
+  transition: 0.25s;
 }
 
 .player-row:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.1);
 }
 
+.player-row h4 {
+  margin-bottom: 4px;
+}
+
+/* ===== PAGINATION ===== */
+
 .pagination {
-  width: 100%;
+  margin-top: 20px;
   display: flex;
-  gap: 14px;
+  gap: 12px;
   justify-content: center;
-  align-items: center;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===== OVERLAY ===== */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+
+/* ===== SIDE POPUP ===== */
+
+.player-popup {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  width: 360px;
+  height: calc(100vh - 64px);
+  background: linear-gradient(180deg, #0b2c8f, #071a46);
+  padding: 26px 22px;
+  z-index: 11;
+  animation: slideIn 0.35s ease forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.close {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.team {
+  color: #ffd700;
+  margin-bottom: 16px;
+}
+
+/* ===== STATS ===== */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-box {
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stat-box span {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ===== SOCIALS ===== */
+
+.socials {
+  display: flex;
+  justify-content: space-around;
   margin-top: 20px;
 }
 
-.center {
-  text-align: center;
+.socials a {
+  color: #38bdf8;
+  text-decoration: none;
 }

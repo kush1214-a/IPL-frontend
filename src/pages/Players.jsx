@@ -2,36 +2,32 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/Players.css";
 
-/* ================= ROLE DERIVATION =================
-   Role backend se nahi aa raha,
-   isliye batting / bowling se derive kar rahe hain
-==================================================== */
+/* ================= ROLE DECIDER (FINAL & CORRECT) ================= */
 
 function getPlayerRole(player) {
-  const batting = player.batting || "";
-  const bowling = player.bowling || "";
-  const name = player.name?.toLowerCase() || "";
+  const s = player.stats?.[0] || {};
 
-  // Wicket Keeper detection
-  if (
-    batting.toLowerCase().includes("wk") ||
-    batting.toLowerCase().includes("keeper") ||
-    name.includes("dhoni")
-  ) {
+  const runs = Number(s.runs || 0);
+  const wickets = Number(s.wickets || 0);
+  const catches = Number(s.catches || 0);
+  const stumpings = Number(s.stumpings || 0);
+
+  // Wicket Keeper
+  if (catches > 0 || stumpings > 0) {
     return "WICKET-KEEPER";
   }
 
-  // All Rounder
-  if (batting && bowling) {
+  // All-rounder
+  if (runs > 0 && wickets > 0) {
     return "ALL-ROUNDER";
   }
 
   // Bowler
-  if (!batting && bowling) {
+  if (wickets > 0 && runs === 0) {
     return "BOWLER";
   }
 
-  // Default
+  // Batter
   return "BATTER";
 }
 
@@ -64,7 +60,7 @@ export default function Players() {
 
   return (
     <div className="players-page">
-      {/* ========== PLAYER LIST ========== */}
+      {/* PLAYER LIST */}
       <div className="players-list">
         {loading ? (
           <p className="center">Loading...</p>
@@ -83,15 +79,10 @@ export default function Players() {
 
         {/* PAGINATION */}
         <div className="pagination">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(p => p - 1)}
-          >
+          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
             Prev
           </button>
-
           <span>{page} / {totalPages}</span>
-
           <button
             disabled={page === totalPages}
             onClick={() => setPage(p => p + 1)}
@@ -101,15 +92,13 @@ export default function Players() {
         </div>
       </div>
 
-      {/* ========== RIGHT SIDE POPUP ========== */}
+      {/* RIGHT POPUP */}
       {selected && (
         <>
           <div className="overlay" onClick={() => setSelected(null)} />
 
           <div className="player-popup">
-            <button className="close" onClick={() => setSelected(null)}>
-              ×
-            </button>
+            <button className="close" onClick={() => setSelected(null)}>×</button>
 
             <h2>{selected.name}</h2>
             <p className="team">
@@ -138,10 +127,9 @@ function RoleBasedStats({ player }) {
 
   return (
     <>
-      {/* ===== BATTTING ===== */}
+      {/* BATTTING */}
       {(role === "BATTER" ||
         role === "ALL-ROUNDER" ||
-        role === "BOWLER" ||
         role === "WICKET-KEEPER") && (
         <>
           <h4 className="section-title">Batting</h4>
@@ -157,10 +145,8 @@ function RoleBasedStats({ player }) {
         </>
       )}
 
-      {/* ===== BOWLING ===== */}
-      {(role === "BOWLER" ||
-        role === "ALL-ROUNDER" ||
-        role === "WICKET-KEEPER") && (
+      {/* BOWLING */}
+      {(role === "BOWLER" || role === "ALL-ROUNDER") && (
         <>
           <h4 className="section-title">Bowling</h4>
           <div className="stats-grid">
@@ -173,7 +159,7 @@ function RoleBasedStats({ player }) {
         </>
       )}
 
-      {/* ===== WICKET KEEPING ===== */}
+      {/* WICKET KEEPING */}
       {role === "WICKET-KEEPER" && (
         <>
           <h4 className="section-title">Wicket Keeping</h4>
@@ -187,7 +173,7 @@ function RoleBasedStats({ player }) {
   );
 }
 
-/* ================= SMALL STAT BOX ================= */
+/* ================= STAT BOX ================= */
 
 const Stat = ({ label, value }) => (
   <div className="stat-box">

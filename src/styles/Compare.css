@@ -1,32 +1,78 @@
-/* ================= COMPARE PAGE ================= */
-
 .compare-page {
   min-height: calc(100vh - 64px);
-  background: white;
-  padding: 40px 20px;
-  max-width: 1200px;
-  margin: auto;
+  background: #ffffff;
+  padding: 40px 20px 80px;
   text-align: center;
 }
+
+.compare-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 40px;
+}
+
+/* ===== CARDS ===== */
 
 .compare-cards {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  align-items: center;
+  gap: 60px;
   flex-wrap: wrap;
-  margin: 40px 0;
+  margin-bottom: 40px;
 }
 
-.compare-team {
-  background: #fff;
-  border-radius: 18px;
-  padding: 30px;
-  width: 220px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+.team-select-card {
+  width: 260px;
+  height: 360px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  position: relative;
 }
+
+.team-select-card img {
+  width: 140px;
+  margin-bottom: 15px;
+}
+
+.team-select-card h3 {
+  font-size: 16px;
+}
+
+.team-select-card select {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+/* ===== VS ===== */
 
 .vs {
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 900;
   color: #ff5722;
+}
+
+/* ===== STATS ===== */
+
+.compare-stats {
+  max-width: 800px;
+  margin: auto;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.stat-label {
+  font-weight: 700;
 }

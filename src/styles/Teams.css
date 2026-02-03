@@ -1,111 +1,42 @@
 .teams-page {
   min-height: 100vh;
-  padding: 50px 20px;
+  padding: 50px 80px;
   background: radial-gradient(circle at top, #0a1a3a, #020b1f);
-  color: #fff;
 }
 
 .teams-title {
   text-align: center;
   font-size: 36px;
   margin-bottom: 40px;
+  color: #fff;
 }
-
-/* ================= GRID ================= */
 
 .teams-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
-  max-width: 1200px;
-  margin: auto;
-  justify-items: center;
+  justify-content: center;
 }
-
-/* 🔥 CENTER LAST 2 CARDS (ONLY DESKTOP) */
-.teams-grid > :nth-last-child(1):nth-child(4n + 3),
-.teams-grid > :nth-last-child(2):nth-child(4n + 3) {
-  grid-column: span 2;
-}
-
-/* ================= CARD ================= */
 
 .team-card {
-  width: 100%;
-  max-width: 260px;
   background: linear-gradient(180deg, #0d2b63, #071a3d);
   border-radius: 18px;
-  padding: 26px 20px;
+  padding: 25px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.35s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-/* TEAM COLOR GLOW */
-.team-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at top,
-    var(--team-color),
-    transparent 65%
-  );
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.team-card:hover::before {
-  opacity: 0.35;
+  transition: 0.3s;
 }
 
 .team-card:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 0 32px var(--team-color);
+  transform: translateY(-8px);
 }
-
-/* ================= CONTENT ================= */
 
 .team-logo {
   width: 90px;
-  height: 90px;
-  object-fit: contain;
-  margin-bottom: 12px;
-  position: relative;
-  z-index: 1;
-}
-
-.team-card h3 {
-  font-size: 16px;
-  margin-bottom: 6px;
-  position: relative;
-  z-index: 1;
+  margin-bottom: 15px;
 }
 
 .team-short {
-  color: #ffd700;
-  font-weight: 700;
-  font-size: 14px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 1000px) {
-  .teams-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .teams-grid > * {
-    grid-column: auto !important;
-  }
-}
-
-@media (max-width: 500px) {
-  .teams-grid {
-    grid-template-columns: 1fr;
-  }
+  color: gold;
+  font-weight: 600;
 }

@@ -11,7 +11,7 @@ export default function StatsDetail() {
   useEffect(() => {
     if (!statType) return;
 
-    (async () => {
+    async function fetchStats() {
       try {
         const res = await api.get(`/stats/${statType}`);
         setStats(res.data || []);
@@ -21,10 +21,14 @@ export default function StatsDetail() {
       } finally {
         setLoading(false);
       }
-    })();
+    }
+
+    fetchStats();
   }, [statType]);
 
-  if (loading) return <h2 className="center">Loading...</h2>;
+  if (loading) {
+    return <h2 className="center">Loading...</h2>;
+  }
 
   const title = statType.replace(/_/g, " ").toUpperCase();
 
@@ -33,13 +37,11 @@ export default function StatsDetail() {
       <h1 className="stats-title">{title}</h1>
 
       <div className="stats-list">
-        {stats.map((item, i) => (
+        {stats.map((item, index) => (
           <div className="stats-row" key={item.playerId}>
-            <span className="rank">{i + 1}</span>
+            <span className="rank">{index + 1}</span>
             <span className="name">{item.player.name}</span>
-            <span className="value">
-              {item.value}
-            </span>
+            <span className="value">{item.value}</span>
           </div>
         ))}
       </div>

@@ -1,46 +1,51 @@
 .stats-page {
-  min-height: 100vh;
-  padding: 40px;
-  background: radial-gradient(circle at top, #0a1a3a, #020b1f);
-  color: #fff;
+  min-height: calc(100vh - 64px);
+  padding: 50px 20px;
+  background: linear-gradient(180deg, #020b25, #000814);
+  color: white;
 }
 
 .stats-title {
   text-align: center;
   font-size: 36px;
-  margin-bottom: 30px;
+  font-weight: 900;
+  margin-bottom: 40px;
 }
 
 .stats-list {
   max-width: 900px;
   margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
 }
 
 .stats-row {
   display: grid;
-  grid-template-columns: 60px 1fr 120px;
+  grid-template-columns: 80px 1fr 120px;
   align-items: center;
-  padding: 16px 22px;
-  background: linear-gradient(135deg, #0d2b63, #071a3d);
+  padding: 18px 24px;
+  margin-bottom: 14px;
+  background: linear-gradient(180deg, #0d2a7a, #06153a);
   border-radius: 14px;
 }
 
 .rank {
-  font-weight: 700;
-  opacity: 0.7;
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffffff44;
 }
 
 .name {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .value {
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffb703;
   text-align: right;
-  color: #ffd700;
-  font-size: 20px;
-  font-weight: 700;
+}
+
+.center {
+  text-align: center;
+  margin-top: 120px;
 }

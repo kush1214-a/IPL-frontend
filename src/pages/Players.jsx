@@ -6,17 +6,22 @@ export default function Players() {
   const [players, setPlayers] = useState([]);
   const [selected, setSelected] = useState(null);
 
+  /* 🔥 PAGINATION STATE */
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   /* ================= FETCH PLAYERS ================= */
   useEffect(() => {
     api
-      .get("/players")
+      .get(`/players?page=${page}`)
       .then((res) => {
         setPlayers(res.data.data || []);
+        setTotalPages(res.data.totalPages || 1);
       })
       .catch((err) => {
         console.error("Players fetch error:", err);
       });
-  }, []);
+  }, [page]);
 
   /* ================= ROLE FALLBACK ================= */
   const getRole = (player) => {
@@ -27,7 +32,7 @@ export default function Players() {
     return "PLAYER";
   };
 
-  /* ================= STAT PICKERS (FLEXIBLE) ================= */
+  /* ================= STAT PICKERS ================= */
   const getBatting = (stats = []) =>
     stats.find((s) => s.statType?.startsWith("batting"));
 
@@ -55,6 +60,27 @@ export default function Players() {
             <span>{p.team?.name}</span>
           </div>
         ))}
+
+        {/* 🔥 PAGINATION CONTROLS */}
+        <div className="pagination">
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            ◀ Prev
+          </button>
+
+          <span>
+            Page {page} / {totalPages}
+          </span>
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next ▶
+          </button>
+        </div>
       </div>
 
       {/* ================= PLAYER MODAL ================= */}

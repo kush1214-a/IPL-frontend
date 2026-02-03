@@ -9,12 +9,12 @@ export default function Compare() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // fetch teams for dropdown
+  // load teams in dropdown
   useEffect(() => {
     api.get("/teams").then((res) => setTeams(res.data));
   }, []);
 
-  // fetch comparison
+  // compare teams
   useEffect(() => {
     if (!teamA || !teamB) return;
 
@@ -22,14 +22,15 @@ export default function Compare() {
     api
       .get(`/compare?teamA=${teamA}&teamB=${teamB}`)
       .then((res) => setResult(res.data))
+      .catch(() => setResult(null))
       .finally(() => setLoading(false));
   }, [teamA, teamB]);
 
   return (
     <div className="compare-page">
-      <h1 className="title">HEAD TO HEAD</h1>
+      <h1 className="compare-title">HEAD TO HEAD</h1>
 
-      {/* SELECTORS */}
+      {/* TEAM SELECT */}
       <div className="compare-select">
         <select value={teamA} onChange={(e) => setTeamA(e.target.value)}>
           <option value="">+ Add Team</option>
@@ -52,19 +53,35 @@ export default function Compare() {
         </select>
       </div>
 
-      {/* RESULT */}
-      {loading && <p className="loading">Loading comparison...</p>}
+      {/* LOADING */}
+      {loading && <p className="loading">Comparing teams...</p>}
 
+      {/* RESULT */}
       {result && (
         <div className="compare-result">
-          {result.map((t) => (
-            <div key={t.short} className="team-card">
-              <h2>{t.name}</h2>
+          {result.map((team) => (
+            <div key={team.short} className="compare-card">
+              <h2>{team.name}</h2>
 
-              <div className="stat">Players: <b>{t.players}</b></div>
-              <div className="stat">Total Matches: <b>{t.totalMatches}</b></div>
-              <div className="stat">Total Runs: <b>{t.totalRuns}</b></div>
-              <div className="stat">Total Wickets: <b>{t.totalWickets}</b></div>
+              <div className="compare-stat">
+                <span>Players</span>
+                <b>{team.players}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Matches</span>
+                <b>{team.totalMatches}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Runs</span>
+                <b>{team.totalRuns}</b>
+              </div>
+
+              <div className="compare-stat">
+                <span>Total Wickets</span>
+                <b>{team.totalWickets}</b>
+              </div>
             </div>
           ))}
         </div>

@@ -14,28 +14,7 @@ export default function StatsDetail() {
     (async () => {
       try {
         const res = await api.get(`/stats/${statType}`);
-
-        // ✅ STEP 1: Sort DESC by value
-        const sorted = [...res.data].sort((a, b) => {
-          const va =
-            a.runs ??
-            a.average ??
-            a.strikeRate ??
-            a.wickets ??
-            0;
-
-          const vb =
-            b.runs ??
-            b.average ??
-            b.strikeRate ??
-            b.wickets ??
-            0;
-
-          return vb - va;
-        });
-
-        // ✅ STEP 2: Take TOP 20 (NOT unique by player)
-        setStats(sorted.slice(0, 20));
+        setStats(res.data || []);
       } catch (err) {
         console.error("Stats fetch error", err);
         setStats([]);
@@ -55,17 +34,11 @@ export default function StatsDetail() {
 
       <div className="stats-list">
         {stats.map((item, i) => (
-          <div className="stats-row" key={i}>
+          <div className="stats-row" key={item.playerId}>
             <span className="rank">{i + 1}</span>
-            <span className="name">
-              {item.player?.name || "Unknown"}
-            </span>
+            <span className="name">{item.player.name}</span>
             <span className="value">
-              {item.runs ??
-               item.average ??
-               item.strikeRate ??
-               item.wickets ??
-               "-"}
+              {item.value}
             </span>
           </div>
         ))}

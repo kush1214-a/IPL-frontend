@@ -2,17 +2,36 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/Players.css";
 
-/* ================= ROLE NORMALIZER ================= */
+/* ================= ROLE DERIVATION =================
+   Role backend se nahi aa raha,
+   isliye batting / bowling se derive kar rahe hain
+==================================================== */
 
-function normalizeRole(role = "") {
-  const r = role.toLowerCase();
+function getPlayerRole(player) {
+  const batting = player.batting || "";
+  const bowling = player.bowling || "";
+  const name = player.name?.toLowerCase() || "";
 
-  if (r.includes("bat")) return "BATTER";
-  if (r.includes("all")) return "ALLROUNDER";
-  if (r.includes("bowl")) return "BOWLER";
-  if (r.includes("keep") || r.includes("wk") || r.includes("wc"))
-    return "WICKET_KEEPER";
+  // Wicket Keeper detection
+  if (
+    batting.toLowerCase().includes("wk") ||
+    batting.toLowerCase().includes("keeper") ||
+    name.includes("dhoni")
+  ) {
+    return "WICKET-KEEPER";
+  }
 
+  // All Rounder
+  if (batting && bowling) {
+    return "ALL-ROUNDER";
+  }
+
+  // Bowler
+  if (!batting && bowling) {
+    return "BOWLER";
+  }
+
+  // Default
   return "BATTER";
 }
 
@@ -70,7 +89,9 @@ export default function Players() {
           >
             Prev
           </button>
+
           <span>{page} / {totalPages}</span>
+
           <button
             disabled={page === totalPages}
             onClick={() => setPage(p => p + 1)}
@@ -92,7 +113,7 @@ export default function Players() {
 
             <h2>{selected.name}</h2>
             <p className="team">
-              {selected.team?.name} • {selected.role}
+              {selected.team?.name} • {getPlayerRole(selected)}
             </p>
 
             <RoleBasedStats player={selected} />
@@ -112,16 +133,16 @@ export default function Players() {
 /* ================= ROLE BASED STATS ================= */
 
 function RoleBasedStats({ player }) {
-  const role = normalizeRole(player.role || player.playingRole);
+  const role = getPlayerRole(player);
   const s = player.stats?.[0] || {};
 
   return (
     <>
       {/* ===== BATTTING ===== */}
       {(role === "BATTER" ||
-        role === "ALLROUNDER" ||
+        role === "ALL-ROUNDER" ||
         role === "BOWLER" ||
-        role === "WICKET_KEEPER") && (
+        role === "WICKET-KEEPER") && (
         <>
           <h4 className="section-title">Batting</h4>
           <div className="stats-grid">
@@ -138,8 +159,8 @@ function RoleBasedStats({ player }) {
 
       {/* ===== BOWLING ===== */}
       {(role === "BOWLER" ||
-        role === "ALLROUNDER" ||
-        role === "WICKET_KEEPER") && (
+        role === "ALL-ROUNDER" ||
+        role === "WICKET-KEEPER") && (
         <>
           <h4 className="section-title">Bowling</h4>
           <div className="stats-grid">
@@ -153,7 +174,7 @@ function RoleBasedStats({ player }) {
       )}
 
       {/* ===== WICKET KEEPING ===== */}
-      {role === "WICKET_KEEPER" && (
+      {role === "WICKET-KEEPER" && (
         <>
           <h4 className="section-title">Wicket Keeping</h4>
           <div className="stats-grid">

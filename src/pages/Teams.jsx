@@ -3,6 +3,20 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "../styles/Teams.css";
 
+/* ===== TEAM COLOR MAP ===== */
+const TEAM_COLORS = {
+  GT: "#cfa54a",
+  RR: "#254aa5",
+  RCB: "#c81e2b",
+  LSG: "#2bb6a3",
+  DC: "#17479e",
+  SRH: "#f15a29",
+  MI: "#005da0",
+  CSK: "#fdb913",
+  PBKS: "#d71920",
+  KKR: "#3a225d"
+};
+
 export default function Teams() {
   const [teams, setTeams] = useState([]);
   const navigate = useNavigate();
@@ -17,7 +31,6 @@ export default function Teams() {
         setTeams([]);
       }
     }
-
     fetchTeams();
   }, []);
 
@@ -30,6 +43,7 @@ export default function Teams() {
           <div
             key={team.id}
             className="team-card"
+            style={{ "--team-color": TEAM_COLORS[team.short] || "#ffffff" }}
             onClick={() => navigate(`/teams/${team.short}`)}
           >
             <img

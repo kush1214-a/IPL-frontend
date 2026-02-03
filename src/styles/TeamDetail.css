@@ -1,41 +1,79 @@
 .team-detail-page {
-  min-height: 100vh;
-  padding: 40px;
+  min-height: calc(100vh - 64px);
+  padding: 60px 20px;
   background-size: cover;
   background-position: center;
-  color: #fff;
+  color: white;
 }
 
+/* ===== HEADER ===== */
 .team-banner {
   display: flex;
-  align-items: center;
   gap: 30px;
-  margin-bottom: 30px;
-}
-
-.team-banner img {
-  width: 120px;
-}
-
-.team-meta {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 40px;
 }
 
+.team-banner img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.1);
+  padding: 16px;
+  border-radius: 20px;
+}
+
+.team-banner h1 {
+  font-size: 38px;
+}
+
+.titles {
+  margin-top: 6px;
+  color: #ffd700;
+  font-weight: 600;
+}
+
+/* ===== META ===== */
+.team-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.team-meta span {
+  color: #ffd700;
+  font-weight: 700;
+}
+
+/* ===== SQUAD ===== */
 .squad-title {
+  font-size: 28px;
   margin-bottom: 20px;
 }
 
 .squad-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
 }
 
 .player-card {
-  background: rgba(0,0,0,0.55);
+  background: linear-gradient(180deg, #0d2a7a, #06153a);
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 14px;
+  transition: 0.3s;
+}
+
+.player-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 18px rgba(255,215,79,0.4);
+}
+
+/* ===== STATES ===== */
+.team-loading {
+  text-align: center;
+  margin-top: 120px;
+  font-size: 26px;
 }
